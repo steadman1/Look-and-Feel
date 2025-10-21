@@ -144,13 +144,34 @@ extension ArtboardViewModel {
             }
         )
     }
-    
+
+    func findTopLeftMostSelectedLayer() -> LFLayer? {
+        // thanks gemini
+        // self.selectionLayers is an array of the selected LFLayer objects.
+        // The complexity of creating this array is O(n), where n is the number of selected items.
+
+        // The min(by:) operation also iterates through all n elements once.
+        return self.selectionLayers.min { layerA, layerB in
+            // Assuming LFLayer has a 'position: CGPoint' property
+            if layerA.position.y < layerB.position.y {
+                return true // layerA is higher up (smaller y)
+            } else if layerA.position.y == layerB.position.y {
+                // If they are at the same y-level, check the x-position
+                return layerA.position.x < layerB.position.x
+            } else {
+                return false // layerB is higher up
+            }
+        }
+    }
+
     static var preview: ArtboardViewModel {
         return ArtboardViewModel(
             layers: [
                 LFPath(name: "Shape 1", position: .zero, size: .init(width: 100, height: 100), fill: .white, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
-                LFPath(name: "Shape 2", position: .init(x: 50, y: 100), size: .init(width: 70, height: 120), fill: .blue, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
-                LFPath(name: "Shape 3", position: .init(x: 140, y: 20), size: .init(width: 50, height: 50), fill: .yellow, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false)
+                LFPath(name: "Shape 2", position: .init(x: 100, y: 100), size: .init(width: 100, height: 100), fill: .blue, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
+
+                LFPath(name: "Shape 3", position: .init(x: 0, y: 300), size: .init(width: 50, height: 50), fill: .white, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
+                LFPath(name: "Shape 4", position: .init(x: 50, y: 350), size: .init(width: 100, height: 50), fill: .blue, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false)
             ],
             selection: [
                 //id

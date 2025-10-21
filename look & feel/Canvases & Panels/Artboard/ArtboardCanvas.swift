@@ -12,7 +12,12 @@ struct ArtboardCanvas: View {
     @ObservedObject var viewModel: ArtboardViewModel
     
     var body: some View {
-        NSArtboardCanvasViewRepresentable(viewModel: viewModel)
+        GeometryReader { geometry in
+            NSArtboardCanvasViewRepresentable(
+                viewModel: viewModel,
+                frame: geometry.frame(in: .local)
+            )
+        }
     }
 }
 

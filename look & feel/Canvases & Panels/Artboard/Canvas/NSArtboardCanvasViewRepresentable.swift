@@ -11,12 +11,15 @@ import SwiftUI
 struct NSArtboardCanvasViewRepresentable: NSViewRepresentable {
     
     @ObservedObject var viewModel: ArtboardViewModel
-    
+
+    var frame: NSRect
+
     func makeNSView(context: Context) -> CanvasView {
-        return CanvasView()
+        return CanvasView(frame: frame, viewModel: viewModel)
     }
-    
+
     func updateNSView(_ nsView: CanvasView, context: Context) {
         nsView.viewModel = viewModel
+        nsView.frame = frame
     }
 }

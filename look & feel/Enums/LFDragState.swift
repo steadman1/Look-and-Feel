@@ -10,5 +10,7 @@ import CoreGraphics
 enum LFDragState {
     case inactive
     
-    case resizing(handle: LFSelectionHandle, initialMouse: CGPoint, initialFrame: CGRect)
+    case resizing(handle: LFSelectionHandle, initialMouse: CGPoint, initialFrames: [CGRect])
+
+    case relocating(initialMouse: CGPoint, initialFrames: [CGRect])
 }
