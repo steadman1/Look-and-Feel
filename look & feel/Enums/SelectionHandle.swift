@@ -48,7 +48,7 @@ enum LFSelectionHandle {
         }
     }
 
-    var anchor: CGPoint { self.mirrorVertical.mirrorHorizontal.point }
+    var anchor: CGPoint { self.point }
 
     var point: CGPoint {
         switch self {

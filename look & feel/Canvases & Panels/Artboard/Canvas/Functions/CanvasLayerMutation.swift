@@ -26,14 +26,10 @@ extension CanvasView {
 
     internal func resize(
         initialFrames: [CGRect],
+        selectionFrame: CGRect,
         canvasDelta: CGPoint,
         handle: LFSelectionHandle
     ) {
-        guard let selectionFrame = getFrame(
-            for: initialFrames,
-            transformRequests: []
-        ) else { return }
-
         for index in 0..<viewModel.selectionLayers.count {
             guard var resizable = viewModel.selectionLayers[index] as? (any Resizable) else { continue }
 

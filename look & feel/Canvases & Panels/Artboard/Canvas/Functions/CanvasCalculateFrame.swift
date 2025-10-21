@@ -169,23 +169,26 @@ extension CanvasView {
             break
         }
 
-        let anchor = CGPoint(
-            x: initialFrame.minX - minPoint.x,
-            y: initialFrame.minY - minPoint.y
-        )
-
-        let selectionDelta = CGSize(
+        let normalizedSelectionDelta = CGSize(
             width: ((maxPoint.x - minPoint.x) + deltaWidth) / (maxPoint.x - minPoint.x) - 1,
             height: ((maxPoint.y - minPoint.y) + deltaHeight) / (maxPoint.y - minPoint.y) - 1
         )
-
         let newSize = CGSize(
-            width: initialFrame.width + initialFrame.width * selectionDelta.width,
-            height: initialFrame.height + initialFrame.height * selectionDelta.height
+            width: initialFrame.width + initialFrame.width * normalizedSelectionDelta.width,
+            height: initialFrame.height + initialFrame.height * normalizedSelectionDelta.height
+        )
+        
+        let individualOriginOffset = CGPoint(
+            x: (handle.anchor.x - 1) * deltaWidth,
+            y: (handle.anchor.y - 1) * deltaHeight
+        )
+        let multiOriginOffset = CGPoint(
+            x: (initialFrame.minX - minPoint.x) * normalizedSelectionDelta.width,
+            y: (initialFrame.minY - minPoint.y) * normalizedSelectionDelta.height
         )
         let newOrigin = CGPoint(
-            x: initialFrame.origin.x + anchor.x * selectionDelta.width,
-            y: initialFrame.origin.y + anchor.y * selectionDelta.height
+            x: initialFrame.origin.x + individualOriginOffset.x + multiOriginOffset.x,
+            y: initialFrame.origin.y + individualOriginOffset.y + multiOriginOffset.y
         )
 
         return CGRect(origin: newOrigin, size: newSize)

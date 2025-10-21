@@ -130,8 +130,20 @@ extension CanvasView {
             let mouseDelta = getMouseDelta(from: initialMouse, with: mouseInView)
             let canvasDelta = getCanvasDelta(from: mouseDelta)
 
+            // 1. using getFrame(for: ...) for consistency--not using
+            // getSelectionFrame(...) as it uses updated origin and size
+            // while mouseDelta/canvasDelta must use initial frame values
+            // 2. no transform requests since all values bake in
+            // transform and scale accordingly (a little confusing
+            // but it works lol)
+            guard let selectionFrame = getFrame(
+                for: initialFrames,
+                transformRequests: []
+            ) else { return }
+
             resize(
                 initialFrames: initialFrames,
+                selectionFrame: selectionFrame,
                 canvasDelta: canvasDelta,
                 handle: handle
             )
