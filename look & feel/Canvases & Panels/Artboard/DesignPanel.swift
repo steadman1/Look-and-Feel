@@ -9,7 +9,9 @@ import SwiftUI
 
 struct DesignPanel: View {
     @ObservedObject var viewModel: ArtboardViewModel
-    
+
+    @State private var size: CGSize = .zero
+
     var body: some View {
         VStack(alignment: .leading, spacing: LFConst.Space.medium) {
             
@@ -75,20 +77,22 @@ struct DesignPanel: View {
                     
                     if viewModel.doesFirstSelectionConform((any Resizable).self) {
                         VStack {
-                            LFNumericInputBox(
-                                viewModel.firstSelectionBinding((any Resizable).self)!.size.width,
-                                step: 10
-                            ) {
+                            LFNumericInputBox($size.width, step: 10) {
                                 Text("W:")
                             }
                             
-                            LFNumericInputBox(
-                                viewModel.firstSelectionBinding((any Resizable).self)!.size.height,
-                                step: 10
-                            ) {
+                            LFNumericInputBox($size.height, step: 10) {
                                 Text("H:")
                             }
                         } // size vstack
+                        .onAppear {
+                            guard let resizable = self.viewModel.firstSelectionBinding((any Resizable).self) else { return }
+                            self.size = resizable.wrappedValue.size
+                        }
+                        .onChange(of: size) { _, newValue in
+                            guard let resizable = self.viewModel.firstSelectionBinding((any Resizable).self) else { return }
+                            resizable.wrappedValue.setSize(self.size)
+                        }
                     } // end if
                 }
                 

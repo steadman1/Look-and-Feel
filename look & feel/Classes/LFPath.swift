@@ -10,7 +10,7 @@ import AppKit
 import SwiftUI
 
 class LFPath: LFLayer, Resizable, Traceable, Colorable {
-    
+
     // MARK: Resizable conformance
     @Published var size: CGSize
     
@@ -60,14 +60,26 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
             rotation: rotation
         )
     }
-    
-    override func draw() {
-        let rect = NSRect(
-            origin: self.position,
-            size: self.size
+
+    var frame: CGRect {
+        CGRect(
+            origin: position,
+            size: size
         )
-        
-        let path = NSBezierPath(rect: rect)
+    }
+
+    func setSize(_ newSize: CGSize) {
+        self.size = newSize
+    }
+
+    override var symbol: AnyView {
+        AnyView (
+            Image(systemName: "rectangle.portrait")
+        )
+    }
+
+    override func draw(in context: CGContext) {
+        let path = NSBezierPath(rect: self.frame)
         
         if fill != .clear {
             NSColor(fill).setFill()

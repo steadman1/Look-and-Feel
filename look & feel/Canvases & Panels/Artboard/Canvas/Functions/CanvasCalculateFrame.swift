@@ -142,14 +142,16 @@ extension CanvasView {
     }
 
     internal func getResizedFrame(
-        from initialFrame: CGRect,
+        initialFrame: CGRect,
+        selectionFrame: CGRect,
         canvasDelta: CGPoint,
-        min minPoint: CGPoint,
-        max maxPoint: CGPoint,
         for handle: LFSelectionHandle
     ) -> CGRect {
         var deltaWidth: CGFloat = 0
         var deltaHeight: CGFloat = 0
+
+        let isWidthNegative = (selectionFrame.width + canvasDelta.x * (2 * handle.anchor.x - 1)) < 0
+        let isHeightNegative = (selectionFrame.height + canvasDelta.y * (2 * handle.anchor.y - 1)) < 0
 
         switch handle {
         case .left, .topLeft, .bottomLeft:
@@ -170,25 +172,33 @@ extension CanvasView {
         }
 
         let normalizedSelectionDelta = CGSize(
-            width: ((maxPoint.x - minPoint.x) + deltaWidth) / (maxPoint.x - minPoint.x) - 1,
-            height: ((maxPoint.y - minPoint.y) + deltaHeight) / (maxPoint.y - minPoint.y) - 1
+            width: ((selectionFrame.size.width) + deltaWidth) / (selectionFrame.size.width) - 1,
+            height: ((selectionFrame.size.height) + deltaHeight) / (selectionFrame.size.height) - 1
         )
-        let newSize = CGSize(
+        let calculatedNewSize = CGSize(
             width: initialFrame.width + initialFrame.width * normalizedSelectionDelta.width,
             height: initialFrame.height + initialFrame.height * normalizedSelectionDelta.height
         )
-        
+        let newSize = CGSize(
+            width: abs(calculatedNewSize.width),
+            height: abs(calculatedNewSize.height)
+        )
+
         let individualOriginOffset = CGPoint(
             x: (handle.anchor.x - 1) * deltaWidth,
             y: (handle.anchor.y - 1) * deltaHeight
         )
         let multiOriginOffset = CGPoint(
-            x: (initialFrame.minX - minPoint.x) * normalizedSelectionDelta.width,
-            y: (initialFrame.minY - minPoint.y) * normalizedSelectionDelta.height
+            x: (initialFrame.minX - selectionFrame.minX) * normalizedSelectionDelta.width,
+            y: (initialFrame.minY - selectionFrame.minY) * normalizedSelectionDelta.height
+        )
+        let isNegativeOffset = CGPoint(
+            x: isWidthNegative ? newSize.width : 0,
+            y: isHeightNegative ? newSize.height : 0
         )
         let newOrigin = CGPoint(
-            x: initialFrame.origin.x + individualOriginOffset.x + multiOriginOffset.x,
-            y: initialFrame.origin.y + individualOriginOffset.y + multiOriginOffset.y
+            x: initialFrame.origin.x + individualOriginOffset.x + multiOriginOffset.x - isNegativeOffset.x,
+            y: initialFrame.origin.y + individualOriginOffset.y + multiOriginOffset.y - isNegativeOffset.y
         )
 
         return CGRect(origin: newOrigin, size: newSize)

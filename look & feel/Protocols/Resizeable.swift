@@ -9,5 +9,8 @@ import CoreGraphics
 import Foundation
 
 protocol Resizable: Transformable, Identifiable {
-    var size: CGSize { get set }
+    var size: CGSize { get }
+    var frame: CGRect { get }
+
+    func setSize(_ newSize: CGSize)
 }

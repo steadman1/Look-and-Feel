@@ -53,7 +53,8 @@ struct LayersPanel: View {
                 LayerPreview(
                     layer,
                     isActive: viewModel.selection.contains(layer.id),
-                    isFirstActive: viewModel.firstSelection == layer.id
+                    isFirstActive: viewModel.firstSelection == layer.id,
+                    isRecentActive: viewModel.recentSelection == layer.id,
                 ) {
                     if isMajorKeyDown {
                         viewModel.toggleSelection(layer.id)
@@ -75,19 +76,23 @@ struct LayerPreview: View {
     
     let layer: LFLayer
     let isActive: Bool
-    let isFirstActive: Bool
+    var indicatorColor: Color
     let action: () -> Void
     
     init(
         _ layer: LFLayer,
         isActive: Bool,
         isFirstActive: Bool,
+        isRecentActive: Bool,
         action: @escaping () -> Void
     ) {
         self.layer = layer
         self.isActive = isActive
-        self.isFirstActive = isFirstActive
         self.action = action
+
+        self.indicatorColor = Color.clear
+        if isFirstActive { self.indicatorColor = Color.mark }
+        if isRecentActive { self.indicatorColor = Color.focus }
     }
     
     var body: some View {
@@ -156,11 +161,9 @@ struct LayerPreview: View {
             
             Spacer()
             
-            if isFirstActive {
-                Circle()
-                    .foregroundStyle(Color.focus)
-                    .frame(width: 6, height: 6)
-            }
+            Circle()
+                .foregroundStyle(indicatorColor)
+                .frame(width: 6, height: 6)
         }
         .offset(lfMouseInteractionBundle.offset)
         .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)

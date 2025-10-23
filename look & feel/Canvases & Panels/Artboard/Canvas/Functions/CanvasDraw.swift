@@ -19,7 +19,7 @@ extension CanvasView {
         context.scaleBy(x: viewModel.zoom, y: viewModel.zoom)
 
         for layer in viewModel.layers {
-            layer.draw()
+            layer.draw(in: context)
         }
 
         context.restoreGState()

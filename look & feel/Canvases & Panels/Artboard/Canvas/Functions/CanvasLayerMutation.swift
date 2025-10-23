@@ -28,27 +28,21 @@ extension CanvasView {
         initialFrames: [CGRect],
         selectionFrame: CGRect,
         canvasDelta: CGPoint,
-        handle: LFSelectionHandle
+        for handle: LFSelectionHandle
     ) {
         for index in 0..<viewModel.selectionLayers.count {
-            guard var resizable = viewModel.selectionLayers[index] as? (any Resizable) else { continue }
-
+            guard let resizable = viewModel.selectionLayers[index] as? (any Resizable) else { continue }
             let initialFrame: CGRect = initialFrames[index]
+
             let newFrame = getResizedFrame(
-                from: initialFrame,
+                initialFrame: initialFrame,
+                selectionFrame: selectionFrame,
                 canvasDelta: canvasDelta,
-                min: CGPoint(x: selectionFrame.minX, y: selectionFrame.minY),
-                max: CGPoint(x: selectionFrame.maxX, y: selectionFrame.maxY),
                 for: handle
             )
 
-            resizable.setPosition(
-                CGPoint(
-                    x: newFrame.origin.x,
-                    y: newFrame.origin.y
-                )
-            )
-            resizable.size = newFrame.size
+            resizable.setPosition(newFrame.origin)
+            resizable.setSize(newFrame.size)
         }
     }
 }

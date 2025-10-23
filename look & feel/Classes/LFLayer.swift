@@ -36,7 +36,7 @@ class LFLayer: ObservableObject, Identifiable, Transformable {
             rotation: 0
         )
     }
-    
+
     func setPosition(_ with: CGPoint) {
         self.position = with
     }
@@ -44,14 +44,16 @@ class LFLayer: ObservableObject, Identifiable, Transformable {
     func setRotation(_ with: CGFloat) {
         self.rotation = with
     }
-    
+
     // children should override
-    open func draw() {
+    open func draw(in context: CGContext) {
         // LFLayer objects shouldn't draw anything
     }
     
     @ViewBuilder
-    var symbol: some View {
-        Image(systemName: "rectangle.portrait")
+    open var symbol: AnyView {
+        AnyView (
+            Image(systemName: "rectangle.portrait")
+        )
     }
 }

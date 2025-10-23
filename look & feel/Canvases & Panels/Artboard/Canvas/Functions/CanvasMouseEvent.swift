@@ -15,17 +15,34 @@ extension CanvasView {
     // these funcs need to account for both translation and scaling of objects
     override func mouseDown(with event: NSEvent) {
         let mouseInView = self.convert(event.locationInWindow, from: nil)
+        let canvasLocationUnderMouse = getCanvasLocationUnderMouse(for: mouseInView)
 
-        guard let selectionFrame = getSelectionFrame(
-            transformRequests: transformRequests
-        ) else { return }
+        // if mouse intersects any frames not in selection, make it selected
+        // must preceed dragState events due to addSelection() race condition
+        let intersection = viewModel.intersect(at: canvasLocationUnderMouse)
+        if let intersection {
+            viewModel.singleSelect(intersection.id)
+        }
 
-        let handles = getHandleFrames(for: selectionFrame)
+        if let selectionFrame = getSelectionFrame(transformRequests: transformRequests) {
+            let handles = getHandleFrames(for: selectionFrame)
 
-        for (handle, _, rect) in handles {
-            if rect.contains(mouseInView) {
-                viewModel.mouseDragState = .resizing(
-                    handle: handle,
+            // if mouse intersects any handle rect bounding boxes, set drag state
+            for (handle, _, rect) in handles {
+                if rect.contains(mouseInView) {
+                    viewModel.mouseDragState = .resizing(
+                        handle: handle,
+                        initialMouse: mouseInView,
+                        initialFrames: viewModel.selectionLayers.compactMap { getFrame(of: $0) }
+                    )
+                    return
+                }
+            }
+
+            // if mouse intersects selectionFrame,
+            if selectionFrame.contains(mouseInView) {
+                NSCursor.closedHand.set()
+                viewModel.mouseDragState = .relocating(
                     initialMouse: mouseInView,
                     initialFrames: viewModel.selectionLayers.compactMap { getFrame(of: $0) }
                 )
@@ -33,12 +50,11 @@ extension CanvasView {
             }
         }
 
-        if selectionFrame.contains(mouseInView) {
-            NSCursor.closedHand.set()
-            viewModel.mouseDragState = .relocating(
-                initialMouse: mouseInView,
-                initialFrames: viewModel.selectionLayers.compactMap { getFrame(of: $0) }
-            )
+        // if mouse doesnt intersect any frames, set mouse arrow and clear selection
+        if intersection == nil {
+            NSCursor.arrow.set()
+            viewModel.mouseDragState = .inactive
+            viewModel.clearSelection()
             return
         }
     }
@@ -85,39 +101,33 @@ extension CanvasView {
 
     override func mouseMoved(with event: NSEvent) {
         let mouseInView = self.convert(event.locationInWindow, from: nil)
+        let canvasLocationUnderMouse = getCanvasLocationUnderMouse(for: mouseInView)
 
-        guard let selectionFrame = getSelectionFrame(
-            transformRequests: transformRequests
-        ) else { return }
-        let handles = getHandleFrames(for: selectionFrame)
+        let intersection = viewModel.intersect(
+            at: canvasLocationUnderMouse
+        )
+        if let intersection {
+            if viewModel.selection.contains(intersection.id)  {
+                NSCursor.openHand.set()
+            } else {
+                NSCursor.pointingHand.set()
+            }
+        }
 
-        // TODO: switch to quad tree for efficient collision detection
-        for layer in viewModel.layers {
-            guard let resizable = layer as? (any Resizable) else { continue }
+        if let selectionFrame = getSelectionFrame(transformRequests: transformRequests) {
+            let handles = getHandleFrames(for: selectionFrame)
 
-            let canvasFrame = getCanvasFrame(
-                for: CGRect(origin: resizable.position, size: resizable.size),
-                with: transformRequests
-            )
-            if canvasFrame.contains(mouseInView) {
-                if viewModel.selection.contains(resizable.id) {
-                    NSCursor.openHand.set()
-                } else {
-                    NSCursor.pointingHand.set()
+            // check for handle intersection first, so
+            // the handle will display over the rect
+            for (handle, _, rect) in handles {
+                if rect.contains(mouseInView) {
+                    handle.cursor.set()
+                    return
                 }
-                return
             }
         }
 
-        for (handle, _, rect) in handles {
-            if rect.contains(mouseInView) {
-                handle.cursor.set()
-
-                return
-            }
-        }
-
-        NSCursor.arrow.set()
+        if intersection == nil { NSCursor.arrow.set() }
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -145,7 +155,7 @@ extension CanvasView {
                 initialFrames: initialFrames,
                 selectionFrame: selectionFrame,
                 canvasDelta: canvasDelta,
-                handle: handle
+                for: handle
             )
         case .relocating(let initialMouse, let initialFrames):
             let mouseDelta = getMouseDelta(from: initialMouse, with: mouseInView)

@@ -7,8 +7,10 @@
 
 import CoreGraphics
 
-enum ParagraphStyle: Int, Hashable, CaseIterable {
-    case left, center, right, leftJustified, centerJustified, rightJustified
+
+
+enum LFTypeStyle: Int, Hashable, CaseIterable {
+    case point, paragraph
 }
 
 protocol Typographic {
@@ -16,5 +18,6 @@ protocol Typographic {
     var fontSize: Double { get set }
     var leading: CGFloat { get set }
     var letterSpacing: CGFloat { get set }
-    var paragraphStyle: ParagraphStyle { get set }
+    var typeStyle: LFTypeStyle { get set }
+    var paragraphStyle: LFParagraphStyle { get set }
 }
