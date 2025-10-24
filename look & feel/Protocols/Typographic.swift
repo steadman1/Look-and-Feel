@@ -14,10 +14,12 @@ enum LFTypeStyle: Int, Hashable, CaseIterable {
 }
 
 protocol Typographic {
-    var fontName: String { get set }
+    var fontName: String { get }
     var fontSize: Double { get set }
     var leading: CGFloat { get set }
     var letterSpacing: CGFloat { get set }
     var typeStyle: LFTypeStyle { get set }
     var paragraphStyle: LFParagraphStyle { get set }
+
+    func setFontName(_ newName: String)
 }

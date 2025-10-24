@@ -24,7 +24,7 @@ struct LFOverlayWindow<OptionContent: View, T: RandomAccessCollection<String>>: 
         VStack(alignment: .leading) {
             if !options.isEmpty {
                 ScrollView(.vertical, showsIndicators: true) {
-                    VStack(spacing: 1) {
+                    LazyVStack(spacing: 1) {
                         ForEach(0..<options.count, id: \.self) { index in
                             let option = options[index as! T.Index]
                             LFOverlayWindowSelection(
@@ -67,7 +67,6 @@ struct LFOverlayWindow<OptionContent: View, T: RandomAccessCollection<String>>: 
                 )
         }
         .offset(y: height + LFConst.stroke * 2)
-        .universalPointerStyle()
     }
 }
 
@@ -111,9 +110,12 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
             isHovering ? Color.foreground : Color.background
         )
         .clipShape(RoundedRectangle(cornerRadius: LFConst.Radius.small))
-        .focusable(true, interactions: .automatic)
-        .focused($isFocused)
+        .onTapGesture { handleSelected() }
+//        .focusable(true, interactions: .automatic)
+//        .focused($isFocused)
+
         .focusEffectDisabled()
+        .universalPointerStyle()
         .overlay {
             if isFocused {
                 RoundedRectangle(cornerRadius: LFConst.Radius.small)
@@ -126,7 +128,6 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
         .onHover { isHovering in
             self.isHovering = isHovering
         }
-        .onTapGesture { handleSelected() }
         .onKeyPress(.return) {
             if !isFocused { return .ignored }
             
@@ -142,6 +143,7 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
     }
     
     private func handleSelected() {
+        print("CLICKED")
         selected = optionString
     }
 }

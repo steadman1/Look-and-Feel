@@ -45,26 +45,26 @@ struct LFInteractionWrapper<Content: View>: View {
             .focusEffectDisabled()
             .onTapGesture {
                 if isMajorKeyDown {
-                    onMajorTap()
+                    DispatchQueue.main.async { onMajorTap() }
                 } else {
-                    onTap()
+                    DispatchQueue.main.async { onTap() }
                 }
             }
             .onLongPressGesture {
                 if isMajorKeyDown {
-                    onMajorHold()
+                    DispatchQueue.main.async { onMajorTap() }
                 } else {
-                    onHold()
+                    DispatchQueue.main.async { onTap() }
                 }
-                
+
                 timerActive = true
                 cancellable = Timer.publish(every: 0.05, on: .main, in: .common)
                     .autoconnect()
                     .sink { _ in
                         if isMajorKeyDown {
-                            onMajorHold()
+                            DispatchQueue.main.async { onMajorTap() }
                         } else {
-                            onHold()
+                            DispatchQueue.main.async { onTap() }
                         }
                     }
                     
@@ -74,7 +74,7 @@ struct LFInteractionWrapper<Content: View>: View {
                 cancellable = nil
             }
             .onKeyPress(.return) {
-                onTap()
+                DispatchQueue.main.async { onTap() }
                 return .handled
             }
             .onModifierKeysChanged { _, new in

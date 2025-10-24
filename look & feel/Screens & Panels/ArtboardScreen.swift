@@ -29,6 +29,7 @@ struct ArtboardScreen: View {
                 } action: { rawValue in
                     leadingPanelState = LFArtboardLeadingPanel(rawValue: rawValue) ?? .layers
                 }
+                .onTapGesture { viewModel.clearSelection() }
                 .frame(width: 300)
                 .zIndex(2)
                 
@@ -63,7 +64,7 @@ struct ArtboardScreen: View {
     ) -> some View {
         
         ScrollView {
-            VStack {
+            VStack(alignment: .leading, spacing: LFConst.Space.small) {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(allCases, id: \.rawValue) { lfcase in

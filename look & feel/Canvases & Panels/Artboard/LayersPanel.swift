@@ -11,8 +11,9 @@ struct LayersPanel: View {
     
     @ObservedObject var viewModel: ArtboardViewModel
     
-    @State private var isMajorKeyDown = false
-    
+    @State private var isShiftDown = false
+    @State private var isCommandDown = false
+
     let majorKey: NSEvent.ModifierFlags = .shift
     
     var body: some View {
@@ -43,7 +44,8 @@ struct LayersPanel: View {
             layersPanelContent
         }
         .onModifierKeysChanged { _, new in
-            isMajorKeyDown = new.contains(.shift)
+            isShiftDown = new.contains(.shift)
+            isCommandDown = new.contains(.command)
         }
     }
     
@@ -56,7 +58,9 @@ struct LayersPanel: View {
                     isFirstActive: viewModel.firstSelection == layer.id,
                     isRecentActive: viewModel.recentSelection == layer.id,
                 ) {
-                    if isMajorKeyDown {
+                    if isShiftDown {
+                        viewModel.multiSelect(layer.id)
+                    } else if isCommandDown {
                         viewModel.toggleSelection(layer.id)
                     } else {
                         viewModel.singleSelect(layer.id)
@@ -91,8 +95,8 @@ struct LayerPreview: View {
         self.action = action
 
         self.indicatorColor = Color.clear
-        if isFirstActive { self.indicatorColor = Color.mark }
-        if isRecentActive { self.indicatorColor = Color.focus }
+        if isFirstActive { self.indicatorColor = Color.focus }
+        if isRecentActive { self.indicatorColor = Color.mark }
     }
     
     var body: some View {

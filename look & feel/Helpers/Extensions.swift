@@ -44,3 +44,24 @@ extension String {
         return CGSize(width: ceil(boundingBox.width), height: ceil(boundingBox.height))
     }
 }
+
+extension NSFont {
+    static func getAllFontNames() -> [String] {
+        var allFontNames: [String] = []
+
+        let fontManager = NSFontManager.shared
+
+        for familyName in fontManager.availableFontFamilies.sorted() {
+            if let fontNames = fontManager.availableMembers(ofFontFamily: familyName) {
+                for fontMember in fontNames {
+                    // fontMember is an array like [fontName, weight, traits, ...]
+                    if let fontName = fontMember[0] as? String {
+                        allFontNames.append(fontName)
+                    }
+                }
+            }
+        }
+
+        return allFontNames
+    }
+}

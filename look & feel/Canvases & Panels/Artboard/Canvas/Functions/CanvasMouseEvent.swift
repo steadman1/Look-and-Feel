@@ -84,13 +84,19 @@ extension CanvasView {
 
         let canvasLocationUnderMouse = getCanvasLocationUnderMouse(for: mouseInView)
 
-        let oldZoom = viewModel.zoom
-        let newZoom = max(oldZoom + event.magnification, 0.05)
-        viewModel.zoom = newZoom
+        var zoom = viewModel.zoom
+        if event.magnification.sign == .minus && zoom > 1 {
+            zoom = pow(viewModel.zoom + event.magnification, 0.99)
+        } else {
+            zoom = pow(viewModel.zoom + event.magnification, 1.009)
+        }
+
+        let clampedZoom = min(max(zoom, 0.05), 100)
+        viewModel.zoom = clampedZoom
 
         viewModel.panOffset = CGPoint(
-            x: mouseInView.x - (canvasLocationUnderMouse.x * newZoom),
-            y: mouseInView.y - (canvasLocationUnderMouse.y * newZoom)
+            x: mouseInView.x - (canvasLocationUnderMouse.x * clampedZoom),
+            y: mouseInView.y - (canvasLocationUnderMouse.y * clampedZoom)
         )
     }
 

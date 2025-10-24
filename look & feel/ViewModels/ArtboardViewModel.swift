@@ -96,6 +96,21 @@ extension ArtboardViewModel {
         selection.insert(id)
     }
 
+    func multiSelect(_ id: UUID) {
+        // get position of id in layers array and set all inbetween most recent and id
+        guard let newIndex = self.layers.firstIndex(where: { $0.id == id }) else { return }
+        guard let recentIndex = self.layers.firstIndex(where: { $0.id == recentSelection }) else {
+            self.toggleSelection(id)
+            return
+        }
+
+        for index in min(recentIndex, newIndex)...max(recentIndex, newIndex) {
+            selection.insert(self.layers[index].id)
+        }
+
+        recentSelection = id
+    }
+
     func addSelection(_ id: UUID) {
         selection.insert(id)
 
