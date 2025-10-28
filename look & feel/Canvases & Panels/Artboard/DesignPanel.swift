@@ -18,7 +18,7 @@ struct DesignPanel: View {
             
             // MARK: layer name
             HStack(spacing: LFConst.Space.small) {
-                if let _ = viewModel.firstSelection {
+                if let id = viewModel.recentSelection {
                     Group {
                         Rectangle()
                             .frame(width: LFConst.Space.small, height: LFConst.stroke)
@@ -27,9 +27,21 @@ struct DesignPanel: View {
                         Text(viewModel.firstSelectionBinding()!.name.wrappedValue)
                             .foregroundStyle(Color.tertiaryText)
 
-                        Circle()
-                            .foregroundStyle(Color.mark)
-                            .frame(width: 6, height: 6)
+                        let isFirstSelected = id == viewModel.firstSelection
+                        ZStack {
+                            Circle()
+                                .foregroundStyle(Color.mark)
+                                .frame(width: 6, height: 6)
+                                .offset(x: isFirstSelected ? 5 : 0)
+
+                            if isFirstSelected {
+                                Circle()
+                                    .stroke(Color.foreground, lineWidth: 3)
+                                    .fill(Color.focus)
+                                    .frame(width: 6, height: 6)
+                            }
+                        }
+                        .animation(.lfEaseOut, value: isFirstSelected)
                     }
                 }
                 

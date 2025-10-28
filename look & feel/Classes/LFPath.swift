@@ -13,14 +13,15 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
 
     // MARK: Resizable conformance
     @Published var size: CGSize
-    
+    @Published var reflection: [LFReflectionAxis]
+
     // MARK: Traceable conformance
     @Published var points: [LFBezierPoint]
     @Published var isClosed: Bool
     
     // MARK: Colorable conformance
-    @Published var fill: Color
-    @Published var stroke: Color
+    @Published var fill: NSColor
+    @Published var stroke: NSColor
     @Published var strokeWidth: CGFloat
     @Published var strokePosition: LFStrokePosition
     
@@ -32,11 +33,13 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
         id: UUID = UUID(),
         name: String,
         position: CGPoint,
-        size: CGSize,
         rotation: CGFloat = 0,
-        
-        fill: Color,
-        stroke: Color,
+
+        size: CGSize,
+        reflection: [LFReflectionAxis] = [],
+
+        fill: NSColor,
+        stroke: NSColor,
         strokeWidth: CGFloat,
         strokePosition: LFStrokePosition,
         
@@ -44,7 +47,8 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
         isClosed: Bool
     ) {
         self.size = size
-        
+        self.reflection = reflection
+
         self.fill = fill
         self.stroke = stroke
         self.strokeWidth = strokeWidth
@@ -72,6 +76,18 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
         self.size = newSize
     }
 
+    private func reflect(_ axis: LFReflectionAxis) {
+        if !reflection.contains(axis) {
+            self.reflection.append(axis)
+        } else {
+            self.reflection.removeAll { $0 == .horizontal }
+        }
+    }
+
+    func reflect(_ axes: [LFReflectionAxis]) {
+        for axis in axes { reflect(axis) }
+    }
+
     override var symbol: AnyView {
         AnyView (
             Image(systemName: "rectangle.portrait")
@@ -82,12 +98,12 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
         let path = NSBezierPath(rect: self.frame)
         
         if fill != .clear {
-            NSColor(fill).setFill()
+            fill.setFill()
             path.fill()
         }
         
         if strokeWidth > 0 && stroke != .clear {
-            NSColor(stroke).setStroke()
+            stroke.setStroke()
             path.lineWidth = strokeWidth
             path.stroke()
         }

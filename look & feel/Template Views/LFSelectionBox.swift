@@ -13,24 +13,25 @@ struct LFSelectionBox<
     OptionContent: View,
     T: RandomAccessCollection<String>
 >: View {
-    
+
     private enum LFFocusState: Int, CaseIterable {
-            case chevron = 0
-            case optionsList = 1
-        }
-    
+        case chevron = 0
+        case optionsList = 1
+    }
+
+    @State private var isPresentingOverlayWindow: Bool = false
     @State private var isHovering: Bool = false
     @State private var isActive: Bool = false
     @FocusState private var focus: LFFocusState?
-    
+
     @Binding var selected: String
-    
+
     let options: T
-    
+
     let symbolContent: SymbolContent
     let placeholderContent: PlaceholderContent
     let optionContent: (String) -> OptionContent
-    
+
     public init(
         _ selected: Binding<String>,
         options: T,
@@ -43,7 +44,7 @@ struct LFSelectionBox<
         self.placeholderContent = placeholder()
         self.optionContent = option
     }
-    
+
     public init(
         _ selected: Binding<String>,
         options: T,
@@ -57,9 +58,9 @@ struct LFSelectionBox<
         self.placeholderContent = placeholder()
         self.optionContent = option
     }
-    
+
     let predefinedHeight: CGFloat = 32
-    
+
     var body: some View {
         let lfMouseInteractionBundle = lfMouseInteractionBundle(
             .selection,
@@ -67,22 +68,20 @@ struct LFSelectionBox<
             isFocused: focus != nil,
             hasError: false
         )
-        
-        let isDropDownActive: Bool = isActive || focus == .optionsList
-        
+
         HStack(alignment: .center) {
             symbolContent
                 .onTapGesture { focus = .optionsList }
-            
+
             ZStack(alignment: .leading) {
                 Text(selected)
                     .foregroundStyle(Color.primaryText)
-                
+
                 Text("Select option")
                     .foregroundStyle(Color.tertiaryText)
                     .opacity(selected.isEmpty ? 1 : 0)
             }
-            
+
             Image(systemName: "chevron.down")
                 .font(LFConst.Fonts.mediumIcon)
                 .padding(.horizontal, LFConst.Space.small)
@@ -120,22 +119,29 @@ struct LFSelectionBox<
         )
         .overlay(alignment: .top) {
             LFOverlayWindow(
+                isPresenting: $isPresentingOverlayWindow,
                 selected: $selected,
                 height: predefinedHeight,
                 options: options,
                 optionContent: optionContent
             )
-            .opacity(isDropDownActive ? 1 : 0)
-            .disabled(!isDropDownActive)
+            .opacity(isPresentingOverlayWindow ? 1 : 0)
+            .disabled(!isPresentingOverlayWindow)
         }
-        .onChange(of: selected) { _, _ in
-            isActive = false
-            focus = nil
+        .onChange(of: isActive) { _, _ in
+            updateOverlayWindowState()
         }
-        .zIndex(isDropDownActive ? 1 : 0)
+        .onChange(of: focus) { _, _ in
+            updateOverlayWindowState()
+        }
+        .zIndex(isPresentingOverlayWindow ? 1 : 0)
         .universalPointerStyle()
     }
-    
+
+    private func updateOverlayWindowState() {
+        isPresentingOverlayWindow = isActive || focus == .optionsList
+    }
+
     private func handleDropDownActive() {
         isActive.toggle()
         focus = isActive ? .optionsList : nil
@@ -157,4 +163,3 @@ struct LFSelectionBox<
     }.frame(maxWidth: 300, maxHeight: 500)
         .background(Color.foreground)
 }
-

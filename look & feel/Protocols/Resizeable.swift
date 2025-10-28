@@ -11,6 +11,8 @@ import Foundation
 protocol Resizable: Transformable, Identifiable {
     var size: CGSize { get }
     var frame: CGRect { get }
+    var reflection: [LFReflectionAxis] { get }
 
     func setSize(_ newSize: CGSize)
+    func reflect(_ axes: [LFReflectionAxis])
 }

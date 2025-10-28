@@ -13,28 +13,29 @@ struct LFInputSelectionBox<
     OptionContent: View,
     T: RandomAccessCollection<String>
 >: View {
-    
+
     private enum LFFocusState: Int, CaseIterable {
         case textField = 0
         case clearButton = 1
         case optionsList = 2
     }
-    
+
     @State private var isHovering: Bool = false
     @State private var isHoveringClear: Bool = false
     @State private var isHoveringChevron: Bool = false
     @State private var isActive: Bool = false
+    @State private var isPresentingOverlayWindow: Bool = false
     @FocusState private var focus: LFFocusState?
-    
+
     @Binding var input: String
     @Binding var selected: String
-    
+
     let options: T
-    
+
     let symbolContent: SymbolContent
     let placeholderContent: PlaceholderContent
     let optionContent: (String) -> OptionContent
-    
+
     public init(
         _ selected: Binding<String>,
         input: Binding<String>,
@@ -50,9 +51,9 @@ struct LFInputSelectionBox<
         self.placeholderContent = placeholder()
         self.optionContent = option
     }
-    
+
     let predefinedHeight: CGFloat = 32
-    
+
     var body: some View {
         let lfMouseInteractionBundle = lfMouseInteractionBundle(
             .selection,
@@ -60,44 +61,42 @@ struct LFInputSelectionBox<
             isFocused: focus != nil,
             hasError: false
         )
-        
-        let isDropDownActive: Bool = isActive || (focus == .textField && !input.isEmpty)
-        
+
         HStack {
             symbolContent
                 .onTapGesture { focus = .textField }
-            
+
             ZStack(alignment: .leading) {
                 TextField("", text: $input)
                     .textFieldStyle(.plain)
                     .focused($focus, equals: .textField)
-                
+
                 placeholderContent
                     .foregroundStyle(Color.tertiaryText)
                     .onTapGesture { focus = .textField }
                     .opacity(input.isEmpty ? 1 : 0)
             }
-            
+
             Image(systemName: "xmark.circle.fill")
                 .font(LFConst.Fonts.mediumIcon)
-//                .padding(1)
-//                .overlay {
-//                    Circle()
-//                        .stroke(
-//                            Color.strokeFocus,
-//                            lineWidth: LFConst.stroke
-//                        )
-//                        .opacity(
-//                            !isHoveringClear && focus == .clearButton
-//                                ? 1 : 0
-//                        )
-//                }
-//                .focusable(true, interactions: .automatic)
-//                .focused($focus, equals: .clearButton)
-//                .onKeyPress(.return) {
-//                    clear()
-//                    return .handled
-//                }
+            //                .padding(1)
+            //                .overlay {
+            //                    Circle()
+            //                        .stroke(
+            //                            Color.strokeFocus,
+            //                            lineWidth: LFConst.stroke
+            //                        )
+            //                        .opacity(
+            //                            !isHoveringClear && focus == .clearButton
+            //                                ? 1 : 0
+            //                        )
+            //                }
+            //                .focusable(true, interactions: .automatic)
+            //                .focused($focus, equals: .clearButton)
+            //                .onKeyPress(.return) {
+            //                    clear()
+            //                    return .handled
+            //                }
                 .onTapGesture {
                     clear()
                 }
@@ -105,7 +104,7 @@ struct LFInputSelectionBox<
                 .disabled(input.isEmpty)
                 .focusEffectDisabled()
                 .universalPointerStyle()
-            
+
             HStack {
                 Rectangle()
                     .frame(
@@ -113,7 +112,7 @@ struct LFInputSelectionBox<
                         height: predefinedHeight
                     )
                     .foregroundStyle(lfMouseInteractionBundle.stroke)
-                
+
                 Image(systemName: "chevron.down")
                     .font(LFConst.Fonts.mediumIcon)
             }
@@ -157,40 +156,49 @@ struct LFInputSelectionBox<
         }
         .overlay(alignment: .top) {
             LFOverlayWindow(
+                isPresenting: $isPresentingOverlayWindow,
                 selected: $selected,
                 height: predefinedHeight,
                 options: filterOptions(input),
                 optionContent: optionContent
             )
-            .opacity(isDropDownActive ? 1 : 0)
-            .disabled(!isDropDownActive)
-        }
-        .onChange(of: selected) { _, newValue in
-            input = newValue
-            isActive = false
-            focus = nil
+            .opacity(isPresentingOverlayWindow ? 1 : 0)
+            .disabled(!isPresentingOverlayWindow)
         }
         .onChange(of: input) { _, newValue in
             if newValue.isEmpty {
                 selected = ""
             }
         }
-        .zIndex(isDropDownActive ? 1 : 0)
+        .onChange(of: focus) { _, _ in
+            updateOverlayWindowState()
+        }
+        .onChange(of: isActive) { _, _ in
+            updateOverlayWindowState()
+        }
+        .onChange(of: isPresentingOverlayWindow) { _, _ in
+            if !selected.isEmpty { input = selected }
+        }
+        .zIndex(isPresentingOverlayWindow ? 1 : 0)
     }
-    
+
+    private func updateOverlayWindowState() {
+        isPresentingOverlayWindow = isActive || (focus == .textField && !input.isEmpty)
+    }
+
     private func handleDropDownActive() {
         isActive.toggle()
         focus = .optionsList
     }
-    
+
     private func clear() {
         input = ""
         selected = ""
     }
-    
+
     private func filterOptions(_ input: String) -> [T.Element] {
         guard !input.isEmpty else { return options.map(\.self) }
-        
+
         return options.compactMap {
             $0.lowercased().contains(input.lowercased()) ? $0 : nil
         }
@@ -216,4 +224,3 @@ struct LFInputSelectionBox<
     }.frame(maxWidth: 300, maxHeight: 500)
         .background(Color.foreground)
 }
-

@@ -6,15 +6,15 @@
 //
 
 import CoreGraphics
-import SwiftUI
+import AppKit
 
 enum LFStrokePosition: Int, Hashable, CaseIterable {
     case inside, center, outside
 }
 
 protocol Colorable {
-    var fill: Color { get set }
-    var stroke: Color { get set }
+    var fill: NSColor { get set }
+    var stroke: NSColor { get set }
     var strokeWidth: CGFloat { get set }
     var strokePosition: LFStrokePosition { get set }
 }

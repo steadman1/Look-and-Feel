@@ -10,9 +10,50 @@ import CoreGraphics
 
 fileprivate let transformRequests: [LFCanvasTransformRequest] = LFCanvasTransformRequest.allCases
 
+// MARK: mouse event override funcs
+// these funcs need to account for both translation and scaling of objects
 extension CanvasView {
-    // MARK: mouse event override funcs
-    // these funcs need to account for both translation and scaling of objects
+
+    // MARK: mouse dragged
+    override func mouseDragged(with event: NSEvent) {
+        let mouseInView = self.convert(event.locationInWindow, from: nil)
+
+        switch viewModel.mouseDragState {
+        case .inactive:
+            return
+        case .resizing(let handle, let initialMouse, let initialFrames):
+            let mouseDelta = getMouseDelta(from: initialMouse, with: mouseInView)
+            let canvasDelta = getCanvasDelta(from: mouseDelta)
+
+            // 1. using getFrame(for: ...) for consistency--not using
+            // getSelectionFrame(...) as it uses updated origin and size
+            // while mouseDelta/canvasDelta must use initial frame values
+            // 2. no transform requests since all values bake in
+            // transform and scale accordingly (a little confusing
+            // but it works lol)
+            guard let selectionFrame = getFrame(
+                for: initialFrames,
+                transformRequests: []
+            ) else { return }
+
+            resize(
+                initialFrames: initialFrames,
+                selectionFrame: selectionFrame,
+                canvasDelta: canvasDelta,
+                for: handle
+            )
+        case .relocating(let initialMouse, let initialFrames):
+            let mouseDelta = getMouseDelta(from: initialMouse, with: mouseInView)
+            let canvasDelta = getCanvasDelta(from: mouseDelta)
+
+            relocate(
+                initialFrames: initialFrames,
+                canvasDelta: canvasDelta
+            )
+        }
+    }
+
+    // MARK: mouse down
     override func mouseDown(with event: NSEvent) {
         let mouseInView = self.convert(event.locationInWindow, from: nil)
         let canvasLocationUnderMouse = getCanvasLocationUnderMouse(for: mouseInView)
@@ -21,7 +62,11 @@ extension CanvasView {
         // must preceed dragState events due to addSelection() race condition
         let intersection = viewModel.intersect(at: canvasLocationUnderMouse)
         if let intersection {
-            viewModel.singleSelect(intersection.id)
+            if event.modifierFlags.contains(.shift) {
+                viewModel.toggleSelection(intersection.id)
+            } else {
+                viewModel.singleSelect(intersection.id)
+            }
         }
 
         if let selectionFrame = getSelectionFrame(transformRequests: transformRequests) {
@@ -59,6 +104,7 @@ extension CanvasView {
         }
     }
 
+    // MARK: mouse up
     override func mouseUp(with event: NSEvent) {
         viewModel.mouseDragState = .inactive
 
@@ -79,6 +125,7 @@ extension CanvasView {
         }
     }
 
+    // MARK: magnify
     override func magnify(with event: NSEvent) {
         let mouseInView = self.convert(event.locationInWindow, from: nil)
 
@@ -100,11 +147,13 @@ extension CanvasView {
         )
     }
 
+    // MARK: scroll wheel
     override func scrollWheel(with event: NSEvent) {
         viewModel.panOffset.x += event.scrollingDeltaX
         viewModel.panOffset.y += event.scrollingDeltaY
     }
 
+    // MARK: mouse moved
     override func mouseMoved(with event: NSEvent) {
         let mouseInView = self.convert(event.locationInWindow, from: nil)
         let canvasLocationUnderMouse = getCanvasLocationUnderMouse(for: mouseInView)
@@ -133,44 +182,7 @@ extension CanvasView {
             }
         }
 
+
         if intersection == nil { NSCursor.arrow.set() }
-    }
-
-    override func mouseDragged(with event: NSEvent) {
-        let mouseInView = self.convert(event.locationInWindow, from: nil)
-
-        switch viewModel.mouseDragState {
-        case .inactive:
-            return
-        case .resizing(let handle, let initialMouse, let initialFrames):
-            let mouseDelta = getMouseDelta(from: initialMouse, with: mouseInView)
-            let canvasDelta = getCanvasDelta(from: mouseDelta)
-
-            // 1. using getFrame(for: ...) for consistency--not using
-            // getSelectionFrame(...) as it uses updated origin and size
-            // while mouseDelta/canvasDelta must use initial frame values
-            // 2. no transform requests since all values bake in
-            // transform and scale accordingly (a little confusing
-            // but it works lol)
-            guard let selectionFrame = getFrame(
-                for: initialFrames,
-                transformRequests: []
-            ) else { return }
-
-            resize(
-                initialFrames: initialFrames,
-                selectionFrame: selectionFrame,
-                canvasDelta: canvasDelta,
-                for: handle
-            )
-        case .relocating(let initialMouse, let initialFrames):
-            let mouseDelta = getMouseDelta(from: initialMouse, with: mouseInView)
-            let canvasDelta = getCanvasDelta(from: mouseDelta)
-
-            relocate(
-                initialFrames: initialFrames,
-                canvasDelta: canvasDelta
-            )
-        }
     }
 }

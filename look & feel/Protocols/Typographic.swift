@@ -6,8 +6,7 @@
 //
 
 import CoreGraphics
-
-
+import Foundation
 
 enum LFTypeStyle: Int, Hashable, CaseIterable {
     case point, paragraph
@@ -16,10 +15,12 @@ enum LFTypeStyle: Int, Hashable, CaseIterable {
 protocol Typographic {
     var fontName: String { get }
     var fontSize: Double { get set }
+    var attributedString: NSAttributedString { get set }
     var leading: CGFloat { get set }
     var letterSpacing: CGFloat { get set }
     var typeStyle: LFTypeStyle { get set }
     var paragraphStyle: LFParagraphStyle { get set }
+    var scale: CGSize { get set }
 
     func setFontName(_ newName: String)
 }

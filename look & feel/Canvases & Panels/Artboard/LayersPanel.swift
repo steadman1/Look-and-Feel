@@ -80,7 +80,8 @@ struct LayerPreview: View {
     
     let layer: LFLayer
     let isActive: Bool
-    var indicatorColor: Color
+    let isFirstActive: Bool
+    let isRecentActive: Bool
     let action: () -> Void
     
     init(
@@ -92,11 +93,9 @@ struct LayerPreview: View {
     ) {
         self.layer = layer
         self.isActive = isActive
+        self.isFirstActive = isFirstActive
+        self.isRecentActive = isRecentActive
         self.action = action
-
-        self.indicatorColor = Color.clear
-        if isFirstActive { self.indicatorColor = Color.focus }
-        if isRecentActive { self.indicatorColor = Color.mark }
     }
     
     var body: some View {
@@ -164,10 +163,29 @@ struct LayerPreview: View {
                 .foregroundStyle(Color.primaryText)
             
             Spacer()
-            
-            Circle()
-                .foregroundStyle(indicatorColor)
-                .frame(width: 6, height: 6)
+
+            if isFirstActive && isRecentActive {
+                ZStack {
+                    Circle()
+                        .foregroundStyle(Color.mark)
+                        .frame(width: 6, height: 6)
+
+                    Circle()
+                        .stroke(Color.background, lineWidth: 3)
+                        .fill(Color.focus)
+                        .frame(width: 6, height: 6)
+                        .offset(x: -5)
+                }
+            } else if isFirstActive {
+                Circle()
+                    .foregroundStyle(Color.mark)
+                    .frame(width: 6, height: 6)
+            } else if isRecentActive {
+                Circle()
+                    .fill(Color.focus)
+                    .frame(width: 6, height: 6)
+            }
+
         }
         .offset(lfMouseInteractionBundle.offset)
         .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)

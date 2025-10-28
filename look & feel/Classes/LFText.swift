@@ -5,8 +5,8 @@
 //  Created by Spencer Steadman on 10/13/25.
 //
 
-import SwiftUI
 import AppKit
+import SwiftUI
 
 class LFText: LFLayer, Resizable, Typographic, Colorable {
 
@@ -14,7 +14,8 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
 
     // MARK: Resizable conformance
     @Published var size: CGSize
-    
+    @Published var reflection: [LFReflectionAxis]
+
     // MARK: Typographic conformance
     @Published var fontName: String
     @Published var fontSize: Double
@@ -22,12 +23,13 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
     @Published var letterSpacing: CGFloat
     @Published var typeStyle: LFTypeStyle
     @Published var paragraphStyle: LFParagraphStyle
-
+    internal var scale: CGSize
+    internal var attributedString: NSAttributedString
     let fontAttributes: [NSAttributedString.Key: Any]
 
     // MARK: Colorable conformance
-    @Published var fill: Color
-    @Published var stroke: Color
+    @Published var fill: NSColor
+    @Published var stroke: NSColor
     @Published var strokeWidth: CGFloat
     @Published var strokePosition: LFStrokePosition
     
@@ -35,11 +37,13 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         text: String,
         name: String,
         position: CGPoint,
-        size: CGSize,
         rotation: CGFloat = 0,
+
+        size: CGSize,
+        reflection: [LFReflectionAxis] = [],
         
-        fill: Color,
-        stroke: Color,
+        fill: NSColor,
+        stroke: NSColor,
         strokeWidth: CGFloat,
         strokePosition: LFStrokePosition,
         
@@ -53,6 +57,7 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         self.text = text
 
         self.size = size
+        self.reflection = reflection
 
         self.fill = fill
         self.stroke = stroke
@@ -65,17 +70,23 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         self.letterSpacing = letterSpacing
         self.typeStyle = typeStyle
         self.paragraphStyle = paragraphStyle
+        self.scale = CGSize(width: 1, height: 1)
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = leading
         paragraphStyle.alignment = NSTextAlignment.left
-
         self.fontAttributes = [
-            .foregroundColor: NSColor.black,
-            .strokeColor: NSColor.black,
+            .foregroundColor: fill,
+            .strokeColor: stroke,
             .strokeWidth: strokeWidth,
             .paragraphStyle: paragraphStyle
         ]
+
+        let nsFont = NSFont(name: fontName, size: fontSize) ?? .systemFont(ofSize: fontSize)
+        self.attributedString = NSAttributedString(
+            string: text,
+            attributes: fontAttributes.merging([.font: nsFont], uniquingKeysWith: { $1 })
+        )
 
         super.init(
             name: name,
@@ -83,7 +94,7 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
             rotation: rotation
         )
 
-        self.setSize(size)
+        self.setSize(attributedString.size())
     }
 
     var frame: CGRect {
@@ -93,29 +104,45 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         )
     }
 
+    func setAttributedString() {
+        self.attributedString = NSAttributedString(
+            string: text,
+            attributes: fontAttributes.merging([.font: getFont(fontSize: fontSize)], uniquingKeysWith: { $1 })
+        )
+    }
+
     func setSize(_ newSize: CGSize) {
         switch typeStyle {
         case .point:
-            let fontSize = getMaxSize(
-                for: CGRect(origin: self.position, size: newSize),
-                with: fontAttributes
-            ).width
-            let nsFont = getFont(fontSize: fontSize)
-            let textBoxSize = text.size(with: nsFont, applying: fontAttributes, constrainedToWidth: newSize.width)
-
-            self.fontSize = fontSize
-            self.size = CGSize(
-                width: textBoxSize.width,
-                height: textBoxSize.height
+            let initialSize = attributedString.size()
+            self.scale = CGSize(
+                width: newSize.width / initialSize.width,
+                height: newSize.height / initialSize.height
             )
         case .paragraph:
-            self.size = newSize
+            break
         }
+        self.size = newSize
+    }
+
+    private func reflect(_ axis: LFReflectionAxis) {
+        if !reflection.contains(axis) {
+            self.reflection.append(axis)
+        } else {
+            self.reflection.removeAll { $0 == .horizontal }
+        }
+    }
+
+    func reflect(_ axes: [LFReflectionAxis]) {
+        for axis in axes { reflect(axis) }
     }
 
     func setFontName(_ newName: String) {
         self.fontName = newName
-        self.setSize(size)
+        self.setAttributedString()
+
+        // dont change scale
+        self.size = attributedString.size()
     }
 
     override var symbol: AnyView {
@@ -129,41 +156,6 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         NSFont(name: fontName, size: fontSize) ?? .systemFont(ofSize: fontSize)
     }
 
-    private func getFontAttributes(with font: NSFont) -> [NSAttributedString.Key: Any] {
-        var newAttributes: [NSAttributedString.Key : Any] = fontAttributes
-        newAttributes[.font] = font
-        return newAttributes
-    }
-
-    private func getMaxSize(
-        for rect: CGRect,
-        with attributes: [NSAttributedString.Key: Any],
-        size: CGSize = .zero,
-        accuracy: CGFloat = 1
-    ) -> CGSize {
-        if accuracy <= 0.01 { return size }
-
-        let newSize = text.size(
-            with: getFont(fontSize: size.width),
-            applying: attributes
-        )
-        if newSize.width > rect.width {
-            return getMaxSize(
-                for: rect,
-                with: attributes,
-                size: CGSize(width: max(size.width - accuracy, 0), height: newSize.height),
-                accuracy: accuracy / 10
-            )
-        }
-
-        return getMaxSize(
-            for: rect,
-            with: attributes,
-            size: CGSize(width: size.width + accuracy, height: newSize.height),
-            accuracy: accuracy
-        )
-    }
-
     // MARK: draw functions
     private func drawPointText(in context: CGContext) {
         context.saveGState()
@@ -171,37 +163,23 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         context.translateBy(x: position.x + size.width / 2, y: position.y + size.height / 2)
         context.rotate(by: rotation * .pi / 180.0)
         context.translateBy(x: -size.width / 2, y: -size.height / 2)
+        context.scaleBy(x: scale.width, y: scale.height)
 
-        let attrString = NSAttributedString(
-            string: text,
-            attributes: getFontAttributes(with: getFont(fontSize: fontSize))
-        )
-
-        let drawRect = CGRect(origin: .zero, size: size)
-
-        attrString.draw(in: drawRect)
+        attributedString.draw(at: .zero)
 
         context.restoreGState()
     }
 
     private func drawParagraphText(in context: CGContext) {
         context.saveGState()
+
         context.translateBy(x: position.x + size.width / 2, y: position.y + size.height / 2)
-
         context.rotate(by: rotation * .pi / 180.0)
-
         context.translateBy(x: -size.width / 2, y: -size.height / 2)
-
-        let attrString = NSAttributedString(
-            string: text,
-            attributes: getFontAttributes(
-                with: getFont(fontSize: fontSize)
-            )
-        )
 
         let drawRect = CGRect(origin: .zero, size: size)
 
-        attrString.draw(in: drawRect)
+        attributedString.draw(in: drawRect)
 
         context.restoreGState()
     }

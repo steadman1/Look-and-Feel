@@ -11,7 +11,8 @@ struct LFOverlayWindow<OptionContent: View, T: RandomAccessCollection<String>>: 
     
     @State private var scrollViewContentSize: CGSize = .zero
     @State private var scrollPosition: String? = nil
-    
+
+    @Binding var isPresenting: Bool
     @Binding var selected: String
     
     let height: CGFloat
@@ -28,7 +29,8 @@ struct LFOverlayWindow<OptionContent: View, T: RandomAccessCollection<String>>: 
                         ForEach(0..<options.count, id: \.self) { index in
                             let option = options[index as! T.Index]
                             LFOverlayWindowSelection(
-                                $selected,
+                                isPresenting: $isPresenting,
+                                selected: $selected,
                                 scrollPosition: $scrollPosition,
                                 optionString: option
                             ) {
@@ -74,7 +76,8 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
     
     @State private var isHovering: Bool = false
     @FocusState private var isFocused: Bool
-    
+
+    @Binding var isPresenting: Bool
     @Binding var selected: String
     @Binding var scrollPosition: String?
     
@@ -82,11 +85,13 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
     let optionContent: OptionContent
     
     init(
-        _ selected: Binding<String>,
+        isPresenting: Binding<Bool>,
+        selected: Binding<String>,
         scrollPosition: Binding<String?>,
         optionString: String,
         @ViewBuilder option: @escaping () -> OptionContent
     ) {
+        self._isPresenting = isPresenting
         self._selected = selected
         self._scrollPosition = scrollPosition
         self.optionString = optionString
@@ -126,6 +131,7 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
             }
         }
         .onHover { isHovering in
+            selected = optionString
             self.isHovering = isHovering
         }
         .onKeyPress(.return) {
@@ -143,7 +149,7 @@ struct LFOverlayWindowSelection<OptionContent: View>: View {
     }
     
     private func handleSelected() {
-        print("CLICKED")
+        isPresenting = false
         selected = optionString
     }
 }
