@@ -46,18 +46,21 @@ extension String {
 }
 
 extension NSFont {
-    static func getAllFontNames() -> [String] {
+    static func getAllFontFamilies() -> [String] {
+        let fontManager = NSFontManager.shared
+        return fontManager.availableFontFamilies.sorted()
+    }
+
+    static func getAllFontMembers(for fontFamily: String) -> [String] {
         var allFontNames: [String] = []
 
         let fontManager = NSFontManager.shared
 
-        for familyName in fontManager.availableFontFamilies.sorted() {
-            if let fontNames = fontManager.availableMembers(ofFontFamily: familyName) {
-                for fontMember in fontNames {
-                    // fontMember is an array like [fontName, weight, traits, ...]
-                    if let fontName = fontMember[0] as? String {
-                        allFontNames.append(fontName)
-                    }
+        if let fontNames = fontManager.availableMembers(ofFontFamily: fontFamily) {
+            for fontMember in fontNames {
+                // fontMember is an array like [fontName, weight, traits, ...]
+                if let fontName = fontMember[0] as? String {
+                    allFontNames.append(fontName)
                 }
             }
         }

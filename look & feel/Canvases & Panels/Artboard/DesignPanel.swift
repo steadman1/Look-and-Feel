@@ -10,8 +10,9 @@ import SwiftUI
 struct DesignPanel: View {
     @ObservedObject var viewModel: ArtboardViewModel
 
-    @State private var fontNameInput: String = ""
-    @State private var fontNames: [String] = []
+    @State private var fontFamilyInput: String = ""
+    @State private var fontFamilies: [String] = []
+    @State private var fontMembers: [String] = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: LFConst.Space.medium) {
@@ -63,6 +64,7 @@ struct DesignPanel: View {
         }
     }
 
+    @ViewBuilder
     private var designPanelContent: some View {
         VStack(alignment: .leading, spacing: LFConst.Space.medium) {
 
@@ -96,47 +98,78 @@ struct DesignPanel: View {
     }
 
     // MARK: typographic content
+    @ViewBuilder
     private var typographicContent: some View {
         let text = self.viewModel.firstSelectionBinding((any Typographic).self)!
-        let bindingFontName = Binding<String>(
+        let bindingFontFamily = Binding<String>(
             get: {
-                text.wrappedValue.fontName
+                text.wrappedValue.fontFamily
             },
             set: { newValue in
-                text.wrappedValue.setFontName(newValue)
+                text.wrappedValue.setFont(newValue, with: "")
             }
         )
 
-        return Group {
+        let bindingFontMember = Binding<String>(
+            get: {
+                text.wrappedValue.fontMember
+            },
+            set: { newValue in
+                text.wrappedValue.setFont(fontFamilyInput, with: newValue)
+            }
+        )
+
+        Group {
             // MARK: transform & resize
             Text("Typography")
                 .foregroundStyle(Color.tertiaryText)
 
-            LFInputSelectionBox(
-                bindingFontName,
-                input: $fontNameInput,
-                options: fontNames
-            ) {
-                Image(systemName: "magnifyingglass")
-            } placeholder: {
-                Text("Search fonts...")
-            } option: { option in
-                HStack {
-                    Text(option)
-                        .font(.custom(option, size: 12))
-                    Spacer()
+            VStack(spacing: LFConst.Space.small) {
+                LFInputSelectionBox(
+                    bindingFontFamily,
+                    input: $fontFamilyInput,
+                    options: fontFamilies
+                ) {
+                    Image(systemName: "magnifyingglass")
+                } placeholder: {
+                    Text("Search fonts...")
+                } option: { option in
+                    HStack {
+                        Text(option)
+                            .font(.custom(option, size: 12))
+                        Spacer()
+                    }
                 }
+
+                LFSelectionBox(
+                    bindingFontMember,
+                    options: fontMembers
+                ) {
+                    Text("Font Members...")
+                } option: { option in
+                    HStack {
+                        Text(option)
+                            .font(.custom(option, size: 12))
+                        Spacer()
+                    }
+                }
+                .frame(maxWidth: .infinity)
             }
         }
         .padding(.horizontal, LFConst.Space.medium)
         .onAppear {
             DispatchQueue.main.async {
-                fontNames = NSFont.getAllFontNames()
+                fontFamilies = NSFont.getAllFontFamilies()
+                fontMembers = NSFont.getAllFontMembers(for: fontFamilyInput)
             }
+        }
+        .onChange(of: fontFamilyInput) { _, newValue in
+            fontMembers = NSFont.getAllFontMembers(for: newValue)
         }
     }
 
     // MARK: transformable content
+    @ViewBuilder
     private var transformableContent: some View {
         VStack(spacing: LFConst.Space.small) {
             LFNumericInputBox(
@@ -155,6 +188,7 @@ struct DesignPanel: View {
         } // position vstack
     }
 
+    @ViewBuilder
     private var rotationContent: some View {
         HStack {
             LFNumericInputBox(
@@ -174,6 +208,7 @@ struct DesignPanel: View {
     }
 
     // MARK: resizable content
+    @ViewBuilder
     private var resizableContent: some View {
         let bindingSize = Binding<CGSize>(
             get: {
@@ -186,7 +221,7 @@ struct DesignPanel: View {
             }
         )
 
-        return VStack {
+        VStack {
             LFNumericInputBox(bindingSize.width, step: 10) {
                 Text("W:")
             }
@@ -198,6 +233,7 @@ struct DesignPanel: View {
     }
 
     // MARK: divider
+    @ViewBuilder
     private var dividerContent: some View {
         Rectangle()
             .frame(height: LFConst.stroke)

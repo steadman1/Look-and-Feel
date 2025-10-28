@@ -13,7 +13,8 @@ enum LFTypeStyle: Int, Hashable, CaseIterable {
 }
 
 protocol Typographic {
-    var fontName: String { get }
+    var fontFamily: String { get }
+    var fontMember: String { get }
     var fontSize: Double { get set }
     var attributedString: NSAttributedString { get set }
     var leading: CGFloat { get set }
@@ -22,5 +23,5 @@ protocol Typographic {
     var paragraphStyle: LFParagraphStyle { get set }
     var scale: CGSize { get set }
 
-    func setFontName(_ newName: String)
+    func setFont(_ familyName: String, with memberName: String)
 }

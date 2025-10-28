@@ -69,73 +69,78 @@ struct LFSelectionBox<
             hasError: false
         )
 
-        HStack(alignment: .center) {
-            symbolContent
-                .onTapGesture { focus = .optionsList }
+        GeometryReader { proxy in
+            HStack(alignment: .center) {
+                symbolContent
+                    .onTapGesture { focus = .optionsList }
 
-            ZStack(alignment: .leading) {
-                Text(selected)
-                    .foregroundStyle(Color.primaryText)
+                ZStack(alignment: .leading) {
+                    Text(selected)
+                        .foregroundStyle(Color.primaryText)
 
-                Text("Select option")
-                    .foregroundStyle(Color.tertiaryText)
-                    .opacity(selected.isEmpty ? 1 : 0)
-            }
-
-            Image(systemName: "chevron.down")
-                .font(LFConst.Fonts.mediumIcon)
-                .padding(.horizontal, LFConst.Space.small)
-                .frame(height: predefinedHeight)
-                .background(focus == .chevron ? Color.foreground : Color.clear)
-                .focusable(true, interactions: .automatic)
-                .focused($focus, equals: .chevron)
-                .focusEffectDisabled()
-                .onKeyPress(.return) {
-                    handleDropDownActive()
-                    return .handled
+                    Text("Select option")
+                        .foregroundStyle(Color.tertiaryText)
+                        .opacity(selected.isEmpty ? 1 : 0)
                 }
-        }
-        .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)
-        .padding(
-            .leading,
-            LFConst.Space.small
-        )
-        .frame(minHeight: predefinedHeight)
-        .background(lfMouseInteractionBundle.background)
-        .clipShape(RoundedRectangle(cornerRadius: LFConst.Radius.regular))
-        .overlay {
-            RoundedRectangle(cornerRadius: LFConst.Radius.regular)
-                .stroke(
-                    lfMouseInteractionBundle.stroke,
-                    lineWidth: LFConst.stroke
-                )
-                .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)
-        }
-        .onHover { isHovering in
-            self.isHovering = isHovering
-        }
-        .simultaneousGesture(
-            TapGesture().onEnded { handleDropDownActive() }
-        )
-        .overlay(alignment: .top) {
-            LFOverlayWindow(
-                isPresenting: $isPresentingOverlayWindow,
-                selected: $selected,
-                height: predefinedHeight,
-                options: options,
-                optionContent: optionContent
+
+                Spacer()
+
+                Image(systemName: "chevron.down")
+                    .font(LFConst.Fonts.mediumIcon)
+                    .padding(.horizontal, LFConst.Space.small)
+                    .frame(height: predefinedHeight)
+                    .background(focus == .chevron ? Color.foreground : Color.clear)
+                    .focusable(true, interactions: .automatic)
+                    .focused($focus, equals: .chevron)
+                    .focusEffectDisabled()
+                    .onKeyPress(.return) {
+                        handleDropDownActive()
+                        return .handled
+                    }
+            }
+            .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)
+            .padding(
+                .leading,
+                LFConst.Space.small
             )
-            .opacity(isPresentingOverlayWindow ? 1 : 0)
-            .disabled(!isPresentingOverlayWindow)
+            .frame(minHeight: predefinedHeight)
+            .frame(width: proxy.size.width)
+            .background(lfMouseInteractionBundle.background)
+            .clipShape(RoundedRectangle(cornerRadius: LFConst.Radius.regular))
+            .overlay {
+                RoundedRectangle(cornerRadius: LFConst.Radius.regular)
+                    .stroke(
+                        lfMouseInteractionBundle.stroke,
+                        lineWidth: LFConst.stroke
+                    )
+                    .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)
+            }
+            .onHover { isHovering in
+                self.isHovering = isHovering
+            }
+            .simultaneousGesture(
+                TapGesture().onEnded { handleDropDownActive() }
+            )
+            .overlay(alignment: .top) {
+                LFOverlayWindow(
+                    isPresenting: $isPresentingOverlayWindow,
+                    selected: $selected,
+                    height: predefinedHeight,
+                    options: options,
+                    optionContent: optionContent
+                )
+                .opacity(isPresentingOverlayWindow ? 1 : 0)
+                .disabled(!isPresentingOverlayWindow)
+            }
+            .onChange(of: isActive) { _, _ in
+                updateOverlayWindowState()
+            }
+            .onChange(of: focus) { _, _ in
+                updateOverlayWindowState()
+            }
+            .zIndex(isPresentingOverlayWindow ? 1 : 0)
+            .universalPointerStyle()
         }
-        .onChange(of: isActive) { _, _ in
-            updateOverlayWindowState()
-        }
-        .onChange(of: focus) { _, _ in
-            updateOverlayWindowState()
-        }
-        .zIndex(isPresentingOverlayWindow ? 1 : 0)
-        .universalPointerStyle()
     }
 
     private func updateOverlayWindowState() {

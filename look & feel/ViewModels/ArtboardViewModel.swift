@@ -256,7 +256,7 @@ extension ArtboardViewModel {
                 LFPath(name: "Shape 3", position: .init(x: 0, y: 300), size: .init(width: 50, height: 50), fill: .white, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
                 LFPath(name: "Shape 4", position: .init(x: 50, y: 350), size: .init(width: 100, height: 50), fill: .blue, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
 
-                LFText(text: "Testing\nText", name: "Text 1", position: .init(x: 200, y: 200), size: .init(width: 200, height: 200), fill: .red, stroke: .clear, strokeWidth: 0, strokePosition: .center, fontName: "helvetica", fontSize: 40, leading: 0, letterSpacing: 0, typeStyle: .point, paragraphStyle: .center)
+                LFText(text: "Testing\nText", name: "Text 1", position: .init(x: 200, y: 200), size: .init(width: 200, height: 200), fill: .red, stroke: .clear, strokeWidth: 0, strokePosition: .center, fontFamily: "helvetica", fontSize: 40, leading: 0, letterSpacing: 0, typeStyle: .point, paragraphStyle: .center)
             ],
             selection: [
                 //id

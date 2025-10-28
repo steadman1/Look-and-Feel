@@ -17,7 +17,8 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
     @Published var reflection: [LFReflectionAxis]
 
     // MARK: Typographic conformance
-    @Published var fontName: String
+    @Published var fontFamily: String
+    @Published var fontMember: String
     @Published var fontSize: Double
     @Published var leading: CGFloat
     @Published var letterSpacing: CGFloat
@@ -47,7 +48,8 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         strokeWidth: CGFloat,
         strokePosition: LFStrokePosition,
         
-        fontName: String,
+        fontFamily: String,
+        fontMember: String = "",
         fontSize: Double,
         leading: CGFloat,
         letterSpacing: CGFloat,
@@ -64,7 +66,8 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         self.strokeWidth = strokeWidth
         self.strokePosition = strokePosition
         
-        self.fontName = fontName
+        self.fontFamily = fontFamily
+        self.fontMember = fontMember
         self.fontSize = fontSize
         self.leading = leading
         self.letterSpacing = letterSpacing
@@ -82,7 +85,7 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
             .paragraphStyle: paragraphStyle
         ]
 
-        let nsFont = NSFont(name: fontName, size: fontSize) ?? .systemFont(ofSize: fontSize)
+        let nsFont = NSFont(name: fontFamily, size: fontSize) ?? .systemFont(ofSize: fontSize)
         self.attributedString = NSAttributedString(
             string: text,
             attributes: fontAttributes.merging([.font: nsFont], uniquingKeysWith: { $1 })
@@ -137,8 +140,14 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         for axis in axes { reflect(axis) }
     }
 
-    func setFontName(_ newName: String) {
-        self.fontName = newName
+    func setFont(_ familyName: String, with memberName: String) {
+        self.fontFamily = familyName
+        self.fontMember = (
+            memberName.isEmpty
+                ? NSFont.getAllFontMembers(for: familyName).first
+                : NSFont.getAllFontMembers(for: familyName).first { $0.contains(memberName) }
+        ) ?? ""
+
         self.setAttributedString()
 
         // dont change scale
@@ -153,7 +162,8 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
     }
 
     private func getFont(fontSize: CGFloat) -> NSFont {
-        NSFont(name: fontName, size: fontSize) ?? .systemFont(ofSize: fontSize)
+        let name = fontMember.isEmpty ? fontFamily : fontMember
+        return NSFont(name: name, size: fontSize) ?? .systemFont(ofSize: fontSize)
     }
 
     // MARK: draw functions
