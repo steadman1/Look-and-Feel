@@ -102,21 +102,24 @@ struct DesignPanel: View {
     private var typographicContent: some View {
         let text = self.viewModel.firstSelectionBinding((any Typographic).self)!
         let bindingFontFamily = Binding<String>(
-            get: {
-                text.wrappedValue.fontFamily
-            },
-            set: { newValue in
-                text.wrappedValue.setFont(newValue, with: "")
-            }
+            get: { text.wrappedValue.fontFamily },
+            set: { text.wrappedValue.setFont($0, with: "") }
         )
-
         let bindingFontMember = Binding<String>(
-            get: {
-                text.wrappedValue.fontMember
-            },
-            set: { newValue in
-                text.wrappedValue.setFont(fontFamilyInput, with: newValue)
-            }
+            get: { text.wrappedValue.fontMember },
+            set: { text.wrappedValue.setFont(fontFamilyInput, with: $0) }
+        )
+        let bindingFontSize = Binding<CGFloat>(
+            get: { text.wrappedValue.fontSize },
+            set: { text.wrappedValue.setFontSize($0) }
+        )
+        let bindingLeading = Binding<CGFloat>(
+            get: { text.wrappedValue.leading },
+            set: { text.wrappedValue.setLeading($0) }
+        )
+        let bindingTracking = Binding<CGFloat>(
+            get: { text.wrappedValue.tracking },
+            set: { text.wrappedValue.setTracking($0) }
         )
 
         Group {
@@ -147,13 +150,51 @@ struct DesignPanel: View {
                 ) {
                     Text("Font Members...")
                 } option: { option in
+                    let optionName = option.split(separator: "-").last
                     HStack {
-                        Text(option)
+                        Text(optionName?.description ?? option)
                             .font(.custom(option, size: 12))
                         Spacer()
                     }
                 }
-                .frame(maxWidth: .infinity)
+
+
+                HStack {
+                    // MARK: font size
+                    LFNumericInputBox(
+                        bindingFontSize,
+                        step: 1
+                    ) {
+                        HStack(spacing: 0) {
+                            Image(systemName: "textformat.size")
+                            Text(":")
+                        }
+                    }
+                }
+
+                HStack {
+                    // MARK: leading (line spacing)
+                    LFNumericInputBox(
+                        bindingLeading,
+                        step: 1
+                    ) {
+                        HStack(spacing: 0) {
+                            Image(systemName: "arrow.up.and.down.text.horizontal")
+                            Text(":")
+                        }
+                    }
+
+                    // MARK: tracking (letter spacing)
+                    LFNumericInputBox(
+                        bindingTracking,
+                        step: 1
+                    ) {
+                        HStack(spacing: 0) {
+                            Image(systemName: "textformat.characters.arrow.left.and.right")
+                            Text(":")
+                        }
+                    }
+                }
             }
         }
         .padding(.horizontal, LFConst.Space.medium)
@@ -210,15 +251,10 @@ struct DesignPanel: View {
     // MARK: resizable content
     @ViewBuilder
     private var resizableContent: some View {
+        let resizable = self.viewModel.firstSelectionBinding((any Resizable).self)!
         let bindingSize = Binding<CGSize>(
-            get: {
-                guard let resizable = self.viewModel.firstSelectionBinding((any Resizable).self) else { return .zero }
-                return resizable.wrappedValue.size
-            },
-            set: { newValue in
-                guard let resizable = self.viewModel.firstSelectionBinding((any Resizable).self) else { return }
-                resizable.wrappedValue.setSize(newValue)
-            }
+            get: { resizable.wrappedValue.size },
+            set: { resizable.wrappedValue.setSize($0) }
         )
 
         VStack {

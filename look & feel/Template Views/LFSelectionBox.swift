@@ -138,9 +138,10 @@ struct LFSelectionBox<
             .onChange(of: focus) { _, _ in
                 updateOverlayWindowState()
             }
-            .zIndex(isPresentingOverlayWindow ? 1 : 0)
             .universalPointerStyle()
         }
+        .frame(minHeight: predefinedHeight)
+        .zIndex(isPresentingOverlayWindow ? 1 : 0)
     }
 
     private func updateOverlayWindowState() {

@@ -72,9 +72,9 @@ class LFPath: LFLayer, Resizable, Traceable, Colorable {
         )
     }
 
-    func setSize(_ newSize: CGSize) {
-        self.size = newSize
-    }
+    func getSize() -> CGSize { self.size }
+
+    func setSize(_ newSize: CGSize) { self.size = newSize }
 
     private func reflect(_ axis: LFReflectionAxis) {
         if !reflection.contains(axis) {

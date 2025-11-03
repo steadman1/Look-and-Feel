@@ -13,20 +13,24 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
     @Published var text: String
 
     // MARK: Resizable conformance
-    @Published var size: CGSize
+    var size: CGSize {
+        CGSize(
+            width: attributedString.size().width * scale.width,
+            height: attributedString.size().height * scale.height
+        )
+    }
+
     @Published var reflection: [LFReflectionAxis]
 
     // MARK: Typographic conformance
     @Published var fontFamily: String
     @Published var fontMember: String
-    @Published var fontSize: Double
+    @Published var fontSize: CGFloat
     @Published var leading: CGFloat
-    @Published var letterSpacing: CGFloat
+    @Published var tracking: CGFloat
     @Published var typeStyle: LFTypeStyle
     @Published var paragraphStyle: LFParagraphStyle
     internal var scale: CGSize
-    internal var attributedString: NSAttributedString
-    let fontAttributes: [NSAttributedString.Key: Any]
 
     // MARK: Colorable conformance
     @Published var fill: NSColor
@@ -40,7 +44,6 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         position: CGPoint,
         rotation: CGFloat = 0,
 
-        size: CGSize,
         reflection: [LFReflectionAxis] = [],
         
         fill: NSColor,
@@ -50,15 +53,14 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         
         fontFamily: String,
         fontMember: String = "",
-        fontSize: Double,
+        fontSize: CGFloat,
         leading: CGFloat,
-        letterSpacing: CGFloat,
+        tracking: CGFloat,
         typeStyle: LFTypeStyle,
         paragraphStyle: LFParagraphStyle,
     ) {
         self.text = text
 
-        self.size = size
         self.reflection = reflection
 
         self.fill = fill
@@ -70,26 +72,10 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         self.fontMember = fontMember
         self.fontSize = fontSize
         self.leading = leading
-        self.letterSpacing = letterSpacing
+        self.tracking = tracking
         self.typeStyle = typeStyle
         self.paragraphStyle = paragraphStyle
         self.scale = CGSize(width: 1, height: 1)
-
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = leading
-        paragraphStyle.alignment = NSTextAlignment.left
-        self.fontAttributes = [
-            .foregroundColor: fill,
-            .strokeColor: stroke,
-            .strokeWidth: strokeWidth,
-            .paragraphStyle: paragraphStyle
-        ]
-
-        let nsFont = NSFont(name: fontFamily, size: fontSize) ?? .systemFont(ofSize: fontSize)
-        self.attributedString = NSAttributedString(
-            string: text,
-            attributes: fontAttributes.merging([.font: nsFont], uniquingKeysWith: { $1 })
-        )
 
         super.init(
             name: name,
@@ -107,13 +93,7 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         )
     }
 
-    func setAttributedString() {
-        self.attributedString = NSAttributedString(
-            string: text,
-            attributes: fontAttributes.merging([.font: getFont(fontSize: fontSize)], uniquingKeysWith: { $1 })
-        )
-    }
-
+    // MARK: setters
     func setSize(_ newSize: CGSize) {
         switch typeStyle {
         case .point:
@@ -125,7 +105,7 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         case .paragraph:
             break
         }
-        self.size = newSize
+        
     }
 
     private func reflect(_ axis: LFReflectionAxis) {
@@ -147,11 +127,18 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
                 ? NSFont.getAllFontMembers(for: familyName).first
                 : NSFont.getAllFontMembers(for: familyName).first { $0.contains(memberName) }
         ) ?? ""
+    }
 
-        self.setAttributedString()
+    func setFontSize(_ fontSize: CGFloat) {
+        self.fontSize = fontSize
+    }
 
-        // dont change scale
-        self.size = attributedString.size()
+    func setLeading(_ leading: CGFloat) {
+        self.leading = leading
+    }
+
+    func setTracking(_ tracking: CGFloat) {
+        self.tracking = tracking
     }
 
     override var symbol: AnyView {
@@ -161,9 +148,34 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         )
     }
 
+    // MARK: getters
     private func getFont(fontSize: CGFloat) -> NSFont {
         let name = fontMember.isEmpty ? fontFamily : fontMember
         return NSFont(name: name, size: fontSize) ?? .systemFont(ofSize: fontSize)
+    }
+
+    // MARK: computed vars
+    private var fontAttributes: [NSAttributedString.Key: Any] {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = leading
+        paragraphStyle.alignment = NSTextAlignment.left
+
+        return [
+            .foregroundColor: fill,
+            .strokeColor: stroke,
+            .strokeWidth: strokeWidth,
+            .paragraphStyle: paragraphStyle,
+            .tracking: tracking
+        ]
+    }
+
+    private var attributedString: NSAttributedString {
+        return NSAttributedString(
+            string: text,
+            attributes: fontAttributes.merging(
+                [.font: getFont(fontSize: fontSize)], uniquingKeysWith: { $1 }
+            )
+        )
     }
 
     // MARK: draw functions
