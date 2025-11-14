@@ -8,15 +8,20 @@
 import SwiftUI
 
 struct ArtboardCanvas: View {
-    
+    @EnvironmentObject private var navState: NavigationState
+
     @ObservedObject var viewModel: ArtboardViewModel
     
     var body: some View {
         GeometryReader { geometry in
-            NSArtboardCanvasViewRepresentable(
-                viewModel: viewModel,
-                frame: geometry.frame(in: .local)
-            )
+            ZStack(alignment: .bottom) {
+                NSArtboardCanvasViewRepresentable(
+                    viewModel: viewModel,
+                    frame: geometry.frame(in: .local)
+                )
+
+                ArtboardToolbar(viewModel: viewModel)
+            }
         }
     }
 }

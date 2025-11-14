@@ -11,7 +11,8 @@ import SwiftUI
 import GameplayKit
 
 class ArtboardViewModel: ObservableObject, CustomStringConvertible {
-    
+
+    @Published var action: LFToolbarAction = .selection
     @Published var mouseDragState: LFDragState = .inactive
     
     @Published var panOffset: CGPoint = .zero

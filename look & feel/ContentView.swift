@@ -22,6 +22,8 @@ struct ContentView: View {
             SemanticScreen()
         case .editTree:
             EditTreeScreen()
+        default:
+            EmptyView()
         }
     }
 }

@@ -39,7 +39,7 @@ struct InteractionBundle: Identifiable {
 }
 
 enum InteractionType {
-    case button, input, selection, layer
+    case button, buttonFlat, input, selection, layer
 }
 
 func lfMouseInteractionBundle(
@@ -51,6 +51,8 @@ func lfMouseInteractionBundle(
     switch type {
     case .button:
         return lfButtonInteractionBundle(isHovering: isHovering, isFocused: isFocused)
+    case .buttonFlat:
+        return lfButtonFlatInteractionBundle(isHovering: isHovering, isFocused: isFocused)
     case .input:
         return lfInputInteractionBundle(isHovering: isHovering, isFocused: isFocused, hasError: hasError)
     case .selection:
@@ -58,6 +60,27 @@ func lfMouseInteractionBundle(
     case .layer:
         return lfLayerInteractionBundle(isHovering: isHovering, isFocused: isFocused)
     }
+}
+
+fileprivate func lfButtonFlatInteractionBundle(
+    isHovering: Bool,
+    isFocused: Bool
+) -> InteractionBundle {
+    if (isFocused) {
+        return InteractionBundle(
+            stroke: Color.focus,
+            background: Color.focus
+        )
+    } else if (isHovering) {
+        return InteractionBundle(
+            stroke: Color.strokeHover,
+            background: Color.foreground
+        )
+    }
+    return InteractionBundle(
+        stroke: Color.stroke,
+        background: Color.foreground
+    )
 }
 
 fileprivate func lfButtonInteractionBundle(

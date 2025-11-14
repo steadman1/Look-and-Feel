@@ -22,8 +22,11 @@ struct LookAndFeel: App {
 
     var body: some Scene {
         Window("Look & Feel", id: "main-window") {
-            ContentView().environmentObject(navigationState)
+            ContentView()
+                .environmentObject(navigationState)
+                .frame(minWidth: 800, minHeight: 500)
         }
         .defaultSize(width: 1000, height: 600)
+        .windowResizability(.contentMinSize)
     }
 }

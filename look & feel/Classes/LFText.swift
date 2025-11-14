@@ -105,7 +105,6 @@ class LFText: LFLayer, Resizable, Typographic, Colorable {
         case .paragraph:
             break
         }
-        
     }
 
     private func reflect(_ axis: LFReflectionAxis) {
