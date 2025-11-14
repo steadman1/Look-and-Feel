@@ -8,69 +8,48 @@ tldr; Figma/Illustrator x Text Editor x Git
 
 Look and Feel is a WIP, vector design tool for macOS that merges the intuitive, visual-first workflow of a traditional artboard with the power and precision of a code-based editor.
 
-I wanted both creative freedom and logical control, so I'm building two distinct ways to design in one place: an **Artboard Canvas** (like Figma or Illustrator) and the unique **Semantic Canvas.** This system is also backed by the **Edit Tree Canvas"**, a customizable, version control system that visualizes the entire lifecycle of your design, allowing you to experiment with changes, view every single edit made to a design, and merge ideas with confidence. Like Git, but for design.
+I wanted both creative freedom and logical control, so I'm building two distinct ways to design in one place: an **Artboard Canvas** (like Figma or Illustrator) and the unique **Semantic Canvas.** This system is also backed by the **Edit Tree Canvas**, a customizable, version control system that visualizes the entire lifecycle of your design, allowing you to experiment with changes, view every single edit made to a design, and merge ideas with confidence. Like Git, but for design.
 
 ## Core Features
-1. The Dual Canvas System
-You're no longer limited to a single mode of creation. Look and Feel syncs two canvases in real-time, giving you the right tool for any task.
-Artboard Canvas: The direct-manipulation, WYSIWYG canvas you know and love. Drag, drop, resize, group, and style elements visually. It's perfect for rapid prototyping, exploration, and spatial arrangement.
-Semantic Canvas: A code-editor interface where your design is represented as declarative code. This allows for:
+### 3. The Multi-Canvas System
+By bringing multiple canvases/environments into one place, I'm building Look and Feel to encourage everyone, designers, engineers, etc. to feel at home with the ability to create in the best environment for their needs.
+**Artboard Canvas**: The WYSIWYG canvas style you know and love from Figma and Illustrator that you love.
+**Semantic Canvas**: A code-editor interface where your design is represented as declarative code, so you can:
+1. Set exact values, spacing, and relationships
+2. Use variables, loops, and logic to generate complex patterns or layouts
+3. Define components and styles in code for perfect consistency
+4. Edit your design in a text-first environment
+**Edit Tree Canvas**: A robust, Git-inspired version control system with a powerful UI—no more simple undo/redo stack, so you can:
+1. View every single edit, from the moment you create a file, is saved as a node in the tree
+2. Explore a new design idea by creating a branch. If you like it, merge it back into your main design. If you don't, discard the branch
+3. Review your entire creative process, see where you experimented, compare two branches visually, and instantly revert to any point in time without losing subsequent work
 
-Unmatched Precision: Set exact values, spacing, and relationships
-Programmatic Design: Use variables, loops, and logic to generate complex patterns or layouts
-Reusability: Define components and styles in code for perfect consistency
-Accessibility: Edit your design in a text-first environment
+### 3. Native macOS Performance
+Look and Feel is built from the ground up as a native macOS application, leveraging a hybrid SwiftUI and AppKit stack, so you get a modern, clean interface powered by SwiftUI.
 
-2. The Edit Tree
-Forget a simple undo/redo stack. The Edit Tree is a robust, Git-inspired version control system built directly into the app.
+## Tech Stack
 
-Complete History: Every single edit, from the moment you create a file, is saved as a node in the tree
-Branching & Merging: Explore a new design idea by creating a branch. If you like it, merge it back into your main design. If you don't, simply discard the branch
-Visual Lifecycle: The Edit Tree panel gives you a high-level overview of your entire creative process. See where you experimented, compare two branches visually, and instantly revert to any point in time without losing subsequent work
+Swift: Core app language
+SwiftUI: Used for the main app, Edit Tree & Semantic Canvas, panels, and modern UI elements
+AppKit: Leveraged for the high-performance Artboard Canvas by wrapping into SwiftUI
 
-3. Native macOS Performance
-Look and Feel is built from the ground up as a native macOS application, leveraging a hybrid SwiftUI and AppKit stack. This means you get a modern, clean interface powered by SwiftUI, combined with the raw performance and deep system integration of AppKit for the demanding tasks of a professional design tool.
-Technology Stack
-
-Swift: The core application language
-SwiftUI: Used for the main application chrome, panels, and modern UI elements
-AppKit: Leveraged for the high-performance artboard canvas, complex window management, and deep-level system interactions where performance is critical
-Core Graphics: Powers the underlying vector rendering engine
-
-Project Status & Roadmap
-Look and Feel is currently in pre-alpha development. The core concepts are being implemented, and the foundation is being laid for a stable and feature-rich tool.
-Our immediate roadmap is focused on building out the core user experience:
-
- Semantic Canvas: Develop the parser and syntax for the design-code language
- Canvas Sync: Implement the real-time, two-way data binding between the Artboard and Semantic canvases
- Edit Tree: Build the data model and UI for the branching version history
- Vector Tools: Implement basic shape tools (Pen, Rectangle, Ellipse, Text)
- Styling Panel: Create the initial UI for managing fills, strokes, and effects
-
-Installation
-As the project is in early development, you must build from source to run it.
-
+## Installation
 Clone the repository:
-
-bashgit clone https://github.com/your-username/look-and-feel.git
+```bash
+git clone https://github.com/your-username/look-and-feel.git
 cd look-and-feel
-
+```
 Open in Xcode:
-
-bashopen LookAndFeel.xcodeproj
-
+```bash
+open LookAndFeel.xcodeproj
+```
 Build & Run:
 
-Select the Look and Feel target
-Choose My Mac as the destination
-Click the "Run" button (or press Cmd+R)
+1. Select the Look and Feel target
+2. Choose My Mac as the destination
+3. Click the "Run" button (or press Cmd+R)
 
-
-
-Contributing
-We are actively looking for contributors! Whether you're a Swift developer, a UI/UX designer, or someone with great ideas, we'd love your help.
-Please read our CONTRIBUTING.md file for details on our code of conduct and the process for submitting pull requests.
-License
+## License
 This project is licensed under the MIT License - see the LICENSE.md file for details.
 
-Built with ☕ and way too many late nights in Blacksburg, VA
+Made with ❤️ by steadman1
