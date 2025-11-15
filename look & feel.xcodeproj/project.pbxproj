@@ -10,12 +10,28 @@
 		0842B95F2EC6AD5B00D81421 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 0842B95E2EC6AD5800D81421 /* README.md */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		0842B9682EC8A95700D81421 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08E456C42E81CC9B00153766 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 08E456CB2E81CC9B00153766;
+			remoteInfo = "look & feel";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0842B95E2EC6AD5800D81421 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0842B9642EC8A95700D81421 /* LFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E456CC2E81CC9B00153766 /* look & feel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "look & feel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		0842B9652EC8A95700D81421 /* LFTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = LFTests;
+			sourceTree = "<group>";
+		};
 		08E456CE2E81CC9B00153766 /* look & feel */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "look & feel";
@@ -24,6 +40,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0842B9612EC8A95700D81421 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		08E456C92E81CC9B00153766 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -39,6 +62,7 @@
 			children = (
 				0842B95E2EC6AD5800D81421 /* README.md */,
 				08E456CE2E81CC9B00153766 /* look & feel */,
+				0842B9652EC8A95700D81421 /* LFTests */,
 				08E456CD2E81CC9B00153766 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -47,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				08E456CC2E81CC9B00153766 /* look & feel.app */,
+				0842B9642EC8A95700D81421 /* LFTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -54,6 +79,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0842B9632EC8A95700D81421 /* LFTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0842B96A2EC8A95700D81421 /* Build configuration list for PBXNativeTarget "LFTests" */;
+			buildPhases = (
+				0842B9602EC8A95700D81421 /* Sources */,
+				0842B9612EC8A95700D81421 /* Frameworks */,
+				0842B9622EC8A95700D81421 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0842B9692EC8A95700D81421 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0842B9652EC8A95700D81421 /* LFTests */,
+			);
+			name = LFTests;
+			packageProductDependencies = (
+			);
+			productName = LFTests;
+			productReference = 0842B9642EC8A95700D81421 /* LFTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		08E456CB2E81CC9B00153766 /* look & feel */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 08E456DA2E81CC9D00153766 /* Build configuration list for PBXNativeTarget "look & feel" */;
@@ -83,9 +131,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					0842B9632EC8A95700D81421 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 08E456CB2E81CC9B00153766;
+					};
 					08E456CB2E81CC9B00153766 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -106,11 +158,19 @@
 			projectRoot = "";
 			targets = (
 				08E456CB2E81CC9B00153766 /* look & feel */,
+				0842B9632EC8A95700D81421 /* LFTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0842B9622EC8A95700D81421 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		08E456CA2E81CC9B00153766 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,6 +181,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0842B9602EC8A95700D81421 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		08E456C82E81CC9B00153766 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -131,7 +198,57 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		0842B9692EC8A95700D81421 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 08E456CB2E81CC9B00153766 /* look & feel */;
+			targetProxy = 0842B9682EC8A95700D81421 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		0842B96B2EC8A95700D81421 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 95SLPS7Q77;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spencersteadman.LFTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/look & feel.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/look & feel";
+			};
+			name = Debug;
+		};
+		0842B96C2EC8A95700D81421 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 95SLPS7Q77;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.spencersteadman.LFTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/look & feel.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/look & feel";
+			};
+			name = Release;
+		};
 		08E456D82E81CC9D00153766 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -266,7 +383,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = GUMZA2HGFC;
+				DEVELOPMENT_TEAM = 95SLPS7Q77;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -298,7 +415,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = GUMZA2HGFC;
+				DEVELOPMENT_TEAM = 95SLPS7Q77;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -323,6 +440,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0842B96A2EC8A95700D81421 /* Build configuration list for PBXNativeTarget "LFTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0842B96B2EC8A95700D81421 /* Debug */,
+				0842B96C2EC8A95700D81421 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		08E456C72E81CC9B00153766 /* Build configuration list for PBXProject "look & feel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -12,7 +12,7 @@ fileprivate let transformRequests: [LFCanvasTransformRequest] = LFCanvasTransfor
 
 // MARK: mouse event override funcs
 // these funcs need to account for both translation and scaling of objects
-extension CanvasView {
+public extension CanvasView {
 
     // MARK: mouse dragged
     override func mouseDragged(with event: NSEvent) {

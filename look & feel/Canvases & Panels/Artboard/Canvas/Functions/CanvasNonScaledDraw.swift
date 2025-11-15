@@ -8,7 +8,7 @@
 import AppKit
 import CoreGraphics
 
-fileprivate let transformRequests: [LFCanvasTransformRequest] = [.scale]
+fileprivate let transformRequests: [LFCanvasTransformRequest] = [.zoom]
 
 extension CanvasView {
     // MARK: translated, non-scaled draw functions

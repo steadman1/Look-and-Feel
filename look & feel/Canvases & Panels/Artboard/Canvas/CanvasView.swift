@@ -8,7 +8,7 @@
 import AppKit
 import SwiftUI
 
-class CanvasView: NSView {
+public class CanvasView: NSView {
 
     init(frame: NSRect, viewModel: ArtboardViewModel) {
         self.viewModel = viewModel
@@ -26,7 +26,7 @@ class CanvasView: NSView {
         }
     }
     
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         setupTrackingArea()
     }
@@ -37,13 +37,13 @@ class CanvasView: NSView {
         addTrackingArea(trackingArea)
     }
     
-    override func updateTrackingAreas() {
+    public override func updateTrackingAreas() {
         super.updateTrackingAreas()
         trackingAreas.forEach { removeTrackingArea($0) }
         setupTrackingArea()
     }
 
-    override func draw(_ dirtyRect: NSRect) {
+    public override func draw(_ dirtyRect: NSRect) {
         guard let context = NSGraphicsContext.current?.cgContext else { return }
 
         NSColor(resource: .background).setFill()
@@ -64,7 +64,7 @@ class CanvasView: NSView {
         context.restoreGState()
     }
     
-    override var isFlipped: Bool { true }
+    public override var isFlipped: Bool { true }
 
     // MARK: misc. helper functions
     internal func handleTransformRequests(
@@ -82,7 +82,7 @@ class CanvasView: NSView {
             switch request {
             case .translate:
                 translation = viewModel.panOffset
-            case .scale:
+            case .zoom:
                 zoom = viewModel.zoom
             case .rotate:
                 continue

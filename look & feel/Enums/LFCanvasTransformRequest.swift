@@ -10,5 +10,5 @@ import CoreGraphics
 // use to tell function what context is not provided to canvas
 // objects that should be accounted for within the function
 enum LFCanvasTransformRequest: CaseIterable {
-    case translate, rotate, scale
+    case translate, rotate, zoom
 }
