@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0842B95F2EC6AD5B00D81421 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 0842B95E2EC6AD5800D81421 /* README.md */; };
+		0842B9712ECA6C3200D81421 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 0842B9702ECA6BDE00D81421 /* LICENSE */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		0842B95E2EC6AD5800D81421 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0842B9642EC8A95700D81421 /* LFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0842B9702ECA6BDE00D81421 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		08E456CC2E81CC9B00153766 /* look & feel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "look & feel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -60,6 +62,7 @@
 		08E456C32E81CC9B00153766 = {
 			isa = PBXGroup;
 			children = (
+				0842B9702ECA6BDE00D81421 /* LICENSE */,
 				0842B95E2EC6AD5800D81421 /* README.md */,
 				08E456CE2E81CC9B00153766 /* look & feel */,
 				0842B9652EC8A95700D81421 /* LFTests */,
@@ -175,6 +178,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0842B9712ECA6C3200D81421 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
