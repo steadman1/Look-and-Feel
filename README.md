@@ -55,9 +55,9 @@ Build & Run:
 
 1. Select the Look and Feel target
 2. Choose My Mac as the destination
-3. Click the "Run" button (or press Cmd+R)
+3. Click the "Run" button
 
 ## License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 Made with ❤️ by steadman1
