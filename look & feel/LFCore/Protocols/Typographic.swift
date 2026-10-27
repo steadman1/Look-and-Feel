@@ -2,16 +2,15 @@
 //  Typographic.swift
 //  look & feel
 //
-//  Created by Spencer Steadman on 10/13/25.
-//
 
 import CoreGraphics
-import Foundation
 
-enum LFTypeStyle: Int, Hashable, CaseIterable {
+/// How a text layer's size is determined.
+enum LFTypeStyle: Int, Codable, Hashable, CaseIterable {
     case point, paragraph
 }
 
+/// A layer that carries typographic properties.
 protocol Typographic {
     var fontFamily: String { get }
     var fontMember: String { get }
@@ -22,8 +21,8 @@ protocol Typographic {
     var paragraphStyle: LFParagraphStyle { get }
     var scale: CGSize { get set }
 
-    func setFont(_ familyName: String, with memberName: String)
-    func setFontSize(_ fontSize: CGFloat)
-    func setLeading(_ leading: CGFloat)
-    func setTracking(_ tracking: CGFloat)
+    mutating func setFont(_ familyName: String, with memberName: String)
+    mutating func setFontSize(_ fontSize: CGFloat)
+    mutating func setLeading(_ leading: CGFloat)
+    mutating func setTracking(_ tracking: CGFloat)
 }

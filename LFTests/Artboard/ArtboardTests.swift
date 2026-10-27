@@ -9,7 +9,7 @@ import Testing
 @testable import look___feel
 internal import CoreGraphics
 
-struct LFArtboardTests {
+struct ArtboardTests {
 
     @Test(
         "tests handleTransformRequests that takes translation requests",
@@ -103,7 +103,4 @@ struct LFArtboardTests {
         #expect(result.translation == .zero)
         #expect(result.zoom == 1)
     }
-
-
-
 }

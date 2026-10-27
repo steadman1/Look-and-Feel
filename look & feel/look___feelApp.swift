@@ -1,28 +1,20 @@
-//___FILEHEADER___
+//
+//  look___feelApp.swift
+//  look & feel
+//
 
 import SwiftUI
-import SwiftData
 
 @main
 struct LookAndFeel: App {
-//    var sharedModelContainer: ModelContainer = {
-//        let schema = Schema([
-//            Item.self,
-//        ])
-//        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-//
-//        do {
-//            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-//        } catch {
-//            fatalError("Could not create ModelContainer: \(error)")
-//        }
-//    }()
-    
     @StateObject private var navigationState = NavigationState()
 
     var body: some Scene {
-        Window("Look & Feel", id: "main-window") {
-            ContentView()
+        // `DocumentGroup` gives us the native macOS document lifecycle for free:
+        // Open / Save / Save As / Recent / autosave / multi-window. Each window is
+        // bound to one `LFDocumentFile` (a `.lffile` bundle).
+        DocumentGroup(newDocument: LFDocumentFile()) { configuration in
+            ContentView(file: configuration.$document)
                 .environmentObject(navigationState)
                 .frame(minWidth: 800, minHeight: 500)
         }

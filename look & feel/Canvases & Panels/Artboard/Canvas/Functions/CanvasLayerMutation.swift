@@ -17,10 +17,11 @@ extension CanvasView {
         canvasDelta: CGPoint
     ) {
         for index in 0..<viewModel.selectionLayers.count {
-            let layer = viewModel.selectionLayers[index]
+            var layer = viewModel.selectionLayers[index]
             let initialFrame: CGRect = initialFrames[index]
             layer.position.x = (initialFrame.origin.x + canvasDelta.x)
             layer.position.y = (initialFrame.origin.y + canvasDelta.y)
+            viewModel.updateLayer(layer)
         }
     }
 
@@ -31,7 +32,8 @@ extension CanvasView {
         for handle: LFSelectionHandle
     ) {
         for index in 0..<viewModel.selectionLayers.count {
-            guard let resizable = viewModel.selectionLayers[index] as? (any Resizable) else { continue }
+            var layer = viewModel.selectionLayers[index]
+            guard layer.isResizable else { continue }
             let initialFrame: CGRect = initialFrames[index]
 
             let newFrame = getResizedFrame(
@@ -41,8 +43,9 @@ extension CanvasView {
                 for: handle
             )
 
-            resizable.setPosition(newFrame.origin)
-            resizable.setSize(newFrame.size)
+            layer.position = newFrame.origin
+            layer.size = newFrame.size
+            viewModel.updateLayer(layer)
         }
     }
 }

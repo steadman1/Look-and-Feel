@@ -42,7 +42,7 @@ struct LFNumericInputBox<LabelContent: View, PlaceholderContent: View, UnitConte
         step: Double = 1
     ) where LabelContent == EmptyView, PlaceholderContent == Text, UnitContent == Text {
         self._binding = binding
-        self.input = binding.wrappedValue.toString()
+        self._input = State(initialValue: binding.wrappedValue.toString())
         self.step = step
         self.hasLabelContent = false
         self.labelContent = EmptyView()
@@ -56,7 +56,7 @@ struct LFNumericInputBox<LabelContent: View, PlaceholderContent: View, UnitConte
         @ViewBuilder label: @escaping () -> LabelContent,
     ) where PlaceholderContent == Text, UnitContent == Text {
         self._binding = binding
-        self.input = binding.wrappedValue.toString()
+        self._input = State(initialValue: binding.wrappedValue.toString())
         self.step = step
         self.hasLabelContent = true
         self.labelContent = label()
@@ -72,7 +72,7 @@ struct LFNumericInputBox<LabelContent: View, PlaceholderContent: View, UnitConte
         @ViewBuilder unit: @escaping () -> UnitContent
     ) {
         self._binding = binding
-        self.input = binding.wrappedValue.toString()
+        self._input = State(initialValue: binding.wrappedValue.toString())
         self.step = step
         self.hasLabelContent = true
         self.labelContent = label()

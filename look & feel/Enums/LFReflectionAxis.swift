@@ -5,6 +5,6 @@
 //  Created by Spencer Steadman on 10/28/25.
 //
 
-enum LFReflectionAxis: Int, Hashable, CaseIterable {
+enum LFReflectionAxis: Int, Codable, Hashable, CaseIterable {
     case horizontal, vertical
 }

@@ -19,14 +19,48 @@
 			remoteGlobalIDString = 08E456CB2E81CC9B00153766;
 			remoteInfo = "look & feel";
 		};
+		08D3FD6D2ED6AFF400EA9B97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08E456C42E81CC9B00153766 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 08E456CB2E81CC9B00153766;
+			remoteInfo = "look & feel";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0842B95E2EC6AD5800D81421 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0842B9642EC8A95700D81421 /* LFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0842B9702ECA6BDE00D81421 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		08D3FD672ED6AFF400EA9B97 /* look & feelUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "look & feelUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E456CC2E81CC9B00153766 /* look & feel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "look & feel.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		08D3FD722ED6AFFD00EA9B97 /* Exceptions for "LFUITests" folder in "LFTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LFUITests.swift,
+				LFUITestsLaunchTests.swift,
+			);
+			target = 0842B9632EC8A95700D81421 /* LFTests */;
+		};
+		08D3FD732ED6AFFD00EA9B97 /* Exceptions for "LFUITests" folder in "look & feelUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LFUITests.swift,
+				LFUITestsLaunchTests.swift,
+			);
+			target = 08D3FD662ED6AFF400EA9B97 /* look & feelUITests */;
+		};
+		08E456FF2E81CC9B0015376A /* Exceptions for "Info.plist" in "look & feel" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 08E456CB2E81CC9B00153766 /* look & feel */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0842B9652EC8A95700D81421 /* LFTests */ = {
@@ -34,8 +68,20 @@
 			path = LFTests;
 			sourceTree = "<group>";
 		};
+		08D3FD622ED6AFA800EA9B97 /* LFUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				08D3FD722ED6AFFD00EA9B97 /* Exceptions for "LFUITests" folder in "LFTests" target */,
+				08D3FD732ED6AFFD00EA9B97 /* Exceptions for "LFUITests" folder in "look & feelUITests" target */,
+			);
+			path = LFUITests;
+			sourceTree = "<group>";
+		};
 		08E456CE2E81CC9B00153766 /* look & feel */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				08E456FF2E81CC9B0015376A /* Exceptions for "Info.plist" in "look & feel" target */,
+			);
 			path = "look & feel";
 			sourceTree = "<group>";
 		};
@@ -43,6 +89,13 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		0842B9612EC8A95700D81421 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08D3FD642ED6AFF400EA9B97 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -67,6 +120,7 @@
 				08E456CE2E81CC9B00153766 /* look & feel */,
 				0842B9652EC8A95700D81421 /* LFTests */,
 				08E456CD2E81CC9B00153766 /* Products */,
+				08D3FD622ED6AFA800EA9B97 /* LFUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +129,7 @@
 			children = (
 				08E456CC2E81CC9B00153766 /* look & feel.app */,
 				0842B9642EC8A95700D81421 /* LFTests.xctest */,
+				08D3FD672ED6AFF400EA9B97 /* look & feelUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,6 +152,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				0842B9652EC8A95700D81421 /* LFTests */,
+				08D3FD622ED6AFA800EA9B97 /* LFUITests */,
 			);
 			name = LFTests;
 			packageProductDependencies = (
@@ -104,6 +160,26 @@
 			productName = LFTests;
 			productReference = 0842B9642EC8A95700D81421 /* LFTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		08D3FD662ED6AFF400EA9B97 /* look & feelUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 08D3FD6F2ED6AFF400EA9B97 /* Build configuration list for PBXNativeTarget "look & feelUITests" */;
+			buildPhases = (
+				08D3FD632ED6AFF400EA9B97 /* Sources */,
+				08D3FD642ED6AFF400EA9B97 /* Frameworks */,
+				08D3FD652ED6AFF400EA9B97 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				08D3FD6E2ED6AFF400EA9B97 /* PBXTargetDependency */,
+			);
+			name = "look & feelUITests";
+			packageProductDependencies = (
+			);
+			productName = "look & feelUITests";
+			productReference = 08D3FD672ED6AFF400EA9B97 /* look & feelUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		08E456CB2E81CC9B00153766 /* look & feel */ = {
 			isa = PBXNativeTarget;
@@ -141,6 +217,10 @@
 						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = 08E456CB2E81CC9B00153766;
 					};
+					08D3FD662ED6AFF400EA9B97 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = 08E456CB2E81CC9B00153766;
+					};
 					08E456CB2E81CC9B00153766 = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -162,12 +242,20 @@
 			targets = (
 				08E456CB2E81CC9B00153766 /* look & feel */,
 				0842B9632EC8A95700D81421 /* LFTests */,
+				08D3FD662ED6AFF400EA9B97 /* look & feelUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0842B9622EC8A95700D81421 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08D3FD652ED6AFF400EA9B97 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -192,6 +280,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		08D3FD632ED6AFF400EA9B97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		08E456C82E81CC9B00153766 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -207,6 +302,11 @@
 			isa = PBXTargetDependency;
 			target = 08E456CB2E81CC9B00153766 /* look & feel */;
 			targetProxy = 0842B9682EC8A95700D81421 /* PBXContainerItemProxy */;
+		};
+		08D3FD6E2ED6AFF400EA9B97 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 08E456CB2E81CC9B00153766 /* look & feel */;
+			targetProxy = 08D3FD6D2ED6AFF400EA9B97 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -250,6 +350,56 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/look & feel.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/look & feel";
+			};
+			name = Release;
+		};
+		08D3FD702ED6AFF400EA9B97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 95SLPS7Q77;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spencersteadman.look---feelUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = "look & feel";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		08D3FD712ED6AFF400EA9B97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 95SLPS7Q77;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.spencersteadman.look---feelUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = "look & feel";
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -392,9 +542,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Look & Feel";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "look & feel/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -424,9 +573,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Look & Feel";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "look & feel/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -449,6 +597,15 @@
 			buildConfigurations = (
 				0842B96B2EC8A95700D81421 /* Debug */,
 				0842B96C2EC8A95700D81421 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		08D3FD6F2ED6AFF400EA9B97 /* Build configuration list for PBXNativeTarget "look & feelUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				08D3FD702ED6AFF400EA9B97 /* Debug */,
+				08D3FD712ED6AFF400EA9B97 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

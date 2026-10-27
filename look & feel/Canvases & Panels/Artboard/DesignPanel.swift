@@ -78,7 +78,7 @@ struct DesignPanel: View {
                         // all layers must conform to transformable
                         transformableContent
 
-                        if viewModel.doesFirstSelectionConform((any Resizable).self) {
+                        if viewModel.firstSelectionIsResizable {
                             resizableContent
                         }
                     }
@@ -91,7 +91,7 @@ struct DesignPanel: View {
 
             dividerContent
 
-            if viewModel.doesFirstSelectionConform((any Typographic).self) {
+            if viewModel.firstSelectionIsTypographic {
                 typographicContent
             }
         }
@@ -100,7 +100,7 @@ struct DesignPanel: View {
     // MARK: typographic content
     @ViewBuilder
     private var typographicContent: some View {
-        let text = self.viewModel.firstSelectionBinding((any Typographic).self)!
+        let text = self.viewModel.firstSelectionBinding()!
         let bindingFontFamily = Binding<String>(
             get: { text.wrappedValue.fontFamily },
             set: { text.wrappedValue.setFont($0, with: "") }
@@ -251,7 +251,7 @@ struct DesignPanel: View {
     // MARK: resizable content
     @ViewBuilder
     private var resizableContent: some View {
-        let resizable = self.viewModel.firstSelectionBinding((any Resizable).self)!
+        let resizable = self.viewModel.firstSelectionBinding()!
         let bindingSize = Binding<CGSize>(
             get: { resizable.wrappedValue.size },
             set: { resizable.wrappedValue.setSize($0) }

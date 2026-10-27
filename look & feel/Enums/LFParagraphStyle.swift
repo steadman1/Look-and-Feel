@@ -6,6 +6,6 @@
 //
 
 
-enum LFParagraphStyle: Int, Hashable, CaseIterable {
+enum LFParagraphStyle: Int, Codable, Hashable, CaseIterable {
     case left, center, right, leftJustified, centerJustified, rightJustified
 }

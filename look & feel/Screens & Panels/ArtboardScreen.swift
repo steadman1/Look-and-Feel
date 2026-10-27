@@ -32,7 +32,7 @@ struct ArtboardScreen: View {
                 .onTapGesture { viewModel.clearSelection() }
                 .frame(width: 300)
                 .zIndex(2)
-                
+
                 ArtboardCanvas(viewModel: viewModel)
                     .frame(maxWidth: proxy.size.width - 600)
                     .zIndex(1)
@@ -52,6 +52,7 @@ struct ArtboardScreen: View {
                 }
                 .frame(width: 300)
                 .zIndex(2)
+                .accessibilityIdentifier("ArtboardScreenDesignPanel")
             }
         }
     }

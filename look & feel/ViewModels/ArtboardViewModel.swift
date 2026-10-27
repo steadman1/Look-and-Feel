@@ -24,8 +24,6 @@ class ArtboardViewModel: ObservableObject, CustomStringConvertible {
     @Published private(set) var recentSelection: UUID?
 
     private var layersByID: [UUID: LFLayer] = [:]
-
-    private var layerCancellables: [UUID: AnyCancellable] = [:]
     
     init(layers: [LFLayer] = [], selection: [UUID] = []) {
         self.selection = Set<UUID>(selection)
@@ -36,6 +34,12 @@ class ArtboardViewModel: ObservableObject, CustomStringConvertible {
             self.firstSelection = first
         }
     }
+
+    /// Seed the live editing state from a document's layers. Used when a document
+    /// is opened (or created) so the canvas reflects the persisted design.
+    convenience init(document: LFDocument, selection: [UUID] = []) {
+        self.init(layers: document.layers, selection: selection)
+    }
     
     var description: String {
         return "ArtboardViewModel(frames: \(layers.description), selection:\(selection.description))"
@@ -44,22 +48,23 @@ class ArtboardViewModel: ObservableObject, CustomStringConvertible {
     func addLayer(_ layer: LFLayer) {
         layers.append(layer)
         layersByID[layer.id] = layer
+    }
 
-        let cancellable = layer.objectWillChange.sink { [weak self] _ in
-            self?.objectWillChange.send()
-        }
-        layerCancellables[layer.id] = cancellable
+    /// Replace a layer (matched by `id`) with an updated value and trigger a
+    /// re-render. This is how the canvas writes back mutations to value-type layers.
+    func updateLayer(_ layer: LFLayer) {
+        guard let index = layers.firstIndex(where: { $0.id == layer.id }) else { return }
+        layers[index] = layer
+        layersByID[layer.id] = layer
     }
     
     func removeFrames(with ids: Set<UUID>) {
         layers.removeAll { ids.contains($0.id) }
-        
+
         for id in ids {
-            layerCancellables[id]?.cancel()
-            layerCancellables.removeValue(forKey: id)
             layersByID.removeValue(forKey: id)
         }
-        
+
         selection.subtract(ids)
         if let first = firstSelection, ids.contains(first) {
             firstSelection = nil
@@ -73,8 +78,7 @@ class ArtboardViewModel: ObservableObject, CustomStringConvertible {
 extension ArtboardViewModel {
     func intersect(at mouseLocation: CGPoint) -> LFLayer? {
         for layer in self.layers {
-            guard let resizable = layer as? (any Resizable) else { continue }
-            if resizable.frame.contains(mouseLocation) {
+            if layer.frame.contains(mouseLocation) {
                 return layer
             }
         }
@@ -162,50 +166,29 @@ extension ArtboardViewModel {
         self.selection.compactMap { self.layersByID[$0] }
     }
     
-    func doesFirstSelectionConform<P>(_ to: P.Type) -> Bool {
+    /// Whether the first selected layer exposes width/height controls.
+    var firstSelectionIsResizable: Bool {
         guard let id = self.firstSelection, let layer = self.layersByID[id] else { return false }
-        return layer is P
+        return layer.isResizable
     }
-    
+
+    /// Whether the first selected layer exposes typography controls.
+    var firstSelectionIsTypographic: Bool {
+        guard let id = self.firstSelection, let layer = self.layersByID[id] else { return false }
+        return layer.isTypographic
+    }
+
+    /// A `Binding` to the first selected layer, for SwiftUI dynamic member lookup
+    /// (`.position.x`, `.name`, …). The getter looks the layer up by id so it always
+    /// reflects the current value; the setter writes the updated value back.
     func firstSelectionBinding() -> Binding<LFLayer>? {
-        guard let id = self.firstSelection, let layer = self.layersByID[id] else {
+        guard let id = self.firstSelection, let initial = self.layersByID[id] else {
             return nil
         }
-        
+
         return Binding<LFLayer>(
-            get: {
-                return layer
-            },
-            set: { updatedLayer in
-                guard let index = self.layers.firstIndex(where: { $0.id == updatedLayer.id }) else { return }
-                
-                self.layers[index] = updatedLayer
-                self.layersByID[updatedLayer.id] = updatedLayer
-            }
-        )
-    }
-    
-    func firstSelectionBinding<P>(_ conformingTo: P.Type) -> Binding<P>? {
-        guard let id = self.firstSelection else {
-            return nil
-        }
-
-        guard self.layersByID[id] is P else {
-            return nil
-        }
-        
-        return Binding<P>(
-            get: {
-                return self.layersByID[id]! as! P
-            },
-            set: { updatedLayer in
-                guard let updatedLayer = updatedLayer as? LFLayer else { return }
-
-                if let index = self.layers.firstIndex(where: { $0.id == updatedLayer.id }) {
-                    self.layers[index] = updatedLayer
-                    self.layersByID[updatedLayer.id] = updatedLayer
-                }
-            }
+            get: { self.layersByID[id] ?? initial },
+            set: { self.updateLayer($0) }
         )
     }
 
@@ -242,26 +225,13 @@ extension ArtboardViewModel {
                 points: [],
                 isClosed: false
             )
-            layers.append(path)
+            layers.append(LFLayer(path))
         }
 
         return ArtboardViewModel(layers: layers)
     }
 
     static var preview: ArtboardViewModel {
-        return ArtboardViewModel(
-            layers: [
-                LFPath(name: "Shape 1", position: .zero, size: .init(width: 100, height: 100), fill: .white, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
-                LFPath(name: "Shape 2", position: .init(x: 100, y: 100), size: .init(width: 100, height: 100), fill: .blue, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
-
-                LFPath(name: "Shape 3", position: .init(x: 0, y: 300), size: .init(width: 50, height: 50), fill: .white, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
-                LFPath(name: "Shape 4", position: .init(x: 50, y: 350), size: .init(width: 100, height: 50), fill: .blue, stroke: .clear, strokeWidth: 0, strokePosition: .center, points: [], isClosed: false),
-
-                LFText(text: "Testing\nText", name: "Text 1", position: .init(x: 200, y: 200), fill: .red, stroke: .clear, strokeWidth: 0, strokePosition: .center, fontFamily: "helvetica", fontSize: 40, leading: 0, tracking: 0, typeStyle: .point, paragraphStyle: .center)
-            ],
-            selection: [
-                //id
-            ]
-        )
+        ArtboardViewModel(document: .preview)
     }
 }

@@ -43,6 +43,7 @@ struct LayersPanel: View {
             
             layersPanelContent
         }
+        .accessibilityIdentifier("ArtboardScreenLayersPanel")
         .onModifierKeysChanged { _, new in
             isShiftDown = new.contains(.shift)
             isCommandDown = new.contains(.command)
@@ -69,6 +70,7 @@ struct LayersPanel: View {
             }
         }
         .padding(.horizontal, LFConst.Space.medium)
+        .accessibilityIdentifier("ArtboardScreenLayerPreviewStack")
     }
     
     private func collapseLayers() { }
@@ -149,6 +151,7 @@ struct LayerPreview: View {
                     }
             )
             .universalPointerStyle()
+            .accessibilityAddTraits(.isButton)
     }
     
     @ViewBuilder
@@ -190,6 +193,7 @@ struct LayerPreview: View {
         .offset(lfMouseInteractionBundle.offset)
         .animation(.lfEaseOut, value: lfMouseInteractionBundle.id)
         .padding(LFConst.Space.small)
+        .accessibilityIdentifier("ArtboardScreenLayerPreview-\(layer.id)")
     }
 }
 
